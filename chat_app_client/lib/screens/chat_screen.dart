@@ -1,30 +1,73 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:get/get.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+import '../controller/chat_controller.dart';
+import '../model/message.dart';
+import '../resources/resources.dart';
+import '../widgets/message_item.dart';
 
 class ChatScreen extends StatelessWidget {
-  Color green = Color(0xff447b28);
-  Color blue = Color(0xff3775c1);
-  Color white = Color(0xffffffff);
   late IO.Socket socket;
+  var chatController = ChatController();
+  var msgInputController = TextEditingController();
 
   @override
   Widget build(_) {
     connectSocket();
+    setUpSocketListener();
 
     return Scaffold(
       body: Container(
+        padding: EdgeInsets.all(16),
         child: Column(
           children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return MessageItem(
-                    message: 'Hello',
-                    sentByMe: true,
-                  );
-                },
+            Obx(
+              () => Expanded(
+                child: ListView.builder(
+                  itemCount: chatController.messageList.length,
+                  itemBuilder: (context, index) {
+                    String message =
+                        chatController.messageList[index].message ??
+                            '[message error]';
+                    String senderID =
+                        chatController.messageList[index].senderID ?? '';
+                    return socket.id != null
+                        ? MessageItem(
+                            message: message,
+                            sentByMe: senderID == socket.id,
+                          )
+                        : NoConnectionMessage();
+                  },
+                ),
+              ),
+            ),
+            Container(
+              child: TextField(
+                style: TextStyle(color: white),
+                cursorColor: blue,
+                controller: msgInputController,
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: white),
+                      borderRadius: BorderRadius.circular(10)),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: white),
+                      borderRadius: BorderRadius.circular(10)),
+                  suffixIcon: Container(
+                    margin: EdgeInsets.only(right: 10),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8), color: blue),
+                    child: IconButton(
+                      onPressed: () {
+                        sendMessage(msgInputController.text);
+                      },
+                      icon: Icon(
+                        Icons.send,
+                        color: white,
+                      ),
+                    ),
+                  ),
+                ),
               ),
             )
           ],
@@ -37,52 +80,37 @@ class ChatScreen extends StatelessWidget {
     socket = IO.io('http://localhost:4000',
         IO.OptionBuilder().setTransports(['websocket']).build());
   }
+
+  void setUpSocketListener() {
+    socket.on('messageReceive', (data) {
+      chatController.messageList.add(Message.fromJson(data));
+    });
+
+    socket.on('connected', (data) {
+      print(data);
+    });
+  }
+
+  void sendMessage(String text) {
+    var messageJson = {"message": text, "senderID": socket.id};
+    socket.emit("message", messageJson);
+    chatController.messageList.add(Message.fromJson(messageJson));
+    msgInputController.clear();
+  }
 }
 
-class MessageItem extends StatelessWidget {
-  final String message;
-  final bool sentByMe;
-
-  MessageItem({required this.message, required this.sentByMe});
+class NoConnectionMessage extends StatelessWidget {
+  const NoConnectionMessage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
-    Color green = const Color(0xff447b28);
-    Color blue = const Color(0xff3775c1);
-    Color white = const Color(0xffffffff);
-    String time = new DateTime.now()
-        .toString()
-        .substring(11, 16);
-
-    return Align(
-      alignment: sentByMe ? Alignment.centerLeft : Alignment.centerRight,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              color: sentByMe ? green : blue,
-            ),
-            child: Text(
-              message,
-              style: TextStyle(color: white, fontSize: 18),
-            ),
-          ),
-          Text(
-            time,
-            style: TextStyle(
-              color: white.withOpacity(0.7),
-              fontSize: 10,
-            ),
-          ),
-          const SizedBox(
-            width: 5,
-          ),
-        ],
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 16),
+      child: Text(
+        'No connection to server.',
+        style: TextStyle(fontSize: 32),
       ),
     );
   }
