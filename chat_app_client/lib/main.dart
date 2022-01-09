@@ -18,9 +18,7 @@ class ChatApp extends StatelessWidget {
           ),
         ),
       ),
-      home: Scaffold(
-        body: ChatScreen(),
-      ),
+      home: ChatScreen(),
     );
   }
 }
