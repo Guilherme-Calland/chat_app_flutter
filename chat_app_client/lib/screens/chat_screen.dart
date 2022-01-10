@@ -13,10 +13,10 @@ class ChatScreen extends StatelessWidget {
   late var providerData;
 
   @override
-  Widget build(BuildContext context) {
-    providerData = Provider.of<ChatAppSharedData>(context, listen: false);
+  Widget build(BuildContext buildContext) {
+    providerData = Provider.of<ChatAppSharedData>(buildContext, listen: false);
     connectSocket();
-    setUpSocketListener(context);
+    setUpSocketListener();
 
     return Scaffold(
       body: Consumer<ChatAppSharedData>(
@@ -77,7 +77,7 @@ class ChatScreen extends StatelessWidget {
                                   color: blue),
                               child: IconButton(
                                 onPressed: () {
-                                  sendMessage(msgInputController.text, context);
+                                  sendMessage(msgInputController.text, buildContext);
                                 },
                                 icon: Icon(
                                   Icons.send,
@@ -102,7 +102,7 @@ class ChatScreen extends StatelessWidget {
         IO.OptionBuilder().setTransports(['websocket']).build());
   }
 
-  void setUpSocketListener(BuildContext context) {
+  void setUpSocketListener() {
     socket.on('messageReceive', (jsonData) {
       providerData
           .addMessage(Message.fromJson(jsonData));

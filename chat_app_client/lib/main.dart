@@ -1,6 +1,5 @@
+import 'package:chat_app_client/resources/resources.dart';
 import 'package:chat_app_client/routes/routes.dart';
-import 'package:chat_app_client/screens/chat_screen.dart';
-import 'package:chat_app_client/screens/home_screen.dart';
 import 'package:chat_app_client/shared/chat_app_shared_data.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,11 +15,11 @@ class ChatApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Socket Chat App',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
-          scaffoldBackgroundColor: Colors.black,
+          primaryColor: Colors.blue,
+          scaffoldBackgroundColor: black,
           textTheme: TextTheme(
             bodyText2: TextStyle(
-              color: Colors.white,
+              color: white,
             ),
           ),
         ),
