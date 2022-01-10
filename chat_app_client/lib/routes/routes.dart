@@ -15,6 +15,6 @@ class Routes{
   }
 
   static initScreen(){
-    return ChatScreen.ROUTE_ID;
+    return HomeScreen.ROUTE_ID;
   }
 }

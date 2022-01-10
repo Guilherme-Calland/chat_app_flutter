@@ -10,15 +10,12 @@ import '../widgets/message_item.dart';
 class ChatScreen extends StatelessWidget {
   static const ROUTE_ID = 'chat_screen';
   var msgInputController = TextEditingController();
-  late final conn;
-
   @override
   Widget build(BuildContext buildContext) {
-    conn = Connector(buildContext);
     return Scaffold(
       body: Consumer<ChatAppSharedData>(
         builder: (_, data, __) {
-          return data.socketStatus == 'connected'
+          return data.isSocketConnected()
               ? Container(
                   padding: EdgeInsets.all(16),
                   child: Column(
@@ -42,7 +39,7 @@ class ChatScreen extends StatelessWidget {
                             String message = item.message ??
                                 '[message error]';
                             bool sentByMe =
-                                item.senderID == conn.socket.id;
+                                item.senderID == data.connector.socket.id;
                             String sendTime =
                                 item.sendTime ?? '';
                             return MessageItem(
@@ -73,7 +70,7 @@ class ChatScreen extends StatelessWidget {
                                   color: blue),
                               child: IconButton(
                                 onPressed: () {
-                                  sendMessage(msgInputController.text);
+                                  sendMessage(msgInputController.text, data);
                                 },
                                 icon: Icon(
                                   Icons.send,
@@ -93,8 +90,8 @@ class ChatScreen extends StatelessWidget {
     );
   }
 
-  void sendMessage(String text){
-    conn.sendMessage(text);
+  void sendMessage(String text, ChatAppSharedData sharedData){
+    sharedData.connector.sendMessage(text);
     msgInputController.clear();
   }
 }
