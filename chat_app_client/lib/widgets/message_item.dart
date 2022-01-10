@@ -4,15 +4,12 @@ import '../resources/resources.dart';
 class MessageItem extends StatelessWidget {
   final String message;
   final bool sentByMe;
+  final String sendTime;
 
-  MessageItem({required this.message, required this.sentByMe});
+  MessageItem({required this.message, required this.sentByMe, required this.sendTime});
 
   @override
   Widget build(BuildContext context) {
-    String time = new DateTime.now()
-        .toString()
-        .substring(11, 16);
-
     return Align(
       alignment: sentByMe ? Alignment.centerLeft : Alignment.centerRight,
       child: Row(
@@ -31,7 +28,7 @@ class MessageItem extends StatelessWidget {
             ),
           ),
           Text(
-            time,
+            sendTime,
             style: TextStyle(
               color: white.withOpacity(0.7),
               fontSize: 10,

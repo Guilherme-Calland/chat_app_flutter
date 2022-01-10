@@ -30,13 +30,18 @@ class ChatScreen extends StatelessWidget {
                         child: ListView.builder(
                           itemCount: data.messageList.length,
                           itemBuilder: (context, index) {
-                            String message = data.messageList[index].message ??
+                            Message item = data.messageList[index];
+
+                            String message = item.message ??
                                 '[message error]';
-                            String senderID =
-                                data.messageList[index].senderID ?? '';
+                            bool sentByMe =
+                                item.senderID == socket.id;
+                            String sendTime =
+                                item.sendTime ?? '';
                             return MessageItem(
                               message: message,
-                              sentByMe: senderID == socket.id,
+                              sentByMe: sentByMe,
+                              sendTime: sendTime
                             );
                           },
                         ),
@@ -103,7 +108,10 @@ class ChatScreen extends StatelessWidget {
         providerData.changeSocketStatus('disconnected');
         providerData.emptyAllMessages();
       }else{
-        var messageJson = {"message": text, "senderID": socket.id};
+        String sendTime = new DateTime.now()
+            .toString()
+            .substring(11, 16);
+        var messageJson = {"message": text, "senderID": socket.id, "sendTime": sendTime};
         socket.emit("message", messageJson);
         providerData
             .addMessage(Message.fromJson(messageJson));
