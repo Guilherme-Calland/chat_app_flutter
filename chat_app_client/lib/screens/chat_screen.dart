@@ -38,6 +38,7 @@ class ChatScreen extends StatelessWidget {
                       ),
                       Expanded(
                         child: ListView.builder(
+                          reverse: true,
                           itemCount: data.messageList.length,
                           itemBuilder: (context, index) {
                             Message item = data.messageList[index];
@@ -57,6 +58,7 @@ class ChatScreen extends StatelessWidget {
                         ),
                       ),
                       Container(
+                        margin: EdgeInsets.only(top: 8),
                         child: TextField(
                           style: TextStyle(color: white),
                           cursorColor: blue,

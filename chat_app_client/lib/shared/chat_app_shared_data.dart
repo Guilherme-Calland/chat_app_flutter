@@ -8,7 +8,7 @@ class ChatAppSharedData extends ChangeNotifier{
   int numOfUsers = 0;
 
   addMessage(Message message){
-    messageList.add(message);
+    messageList.insert(0, message);
     notifyListeners();
   }
 
