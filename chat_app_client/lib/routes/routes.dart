@@ -1,3 +1,4 @@
+import 'package:chat_app_client/screens/chat_screen.dart';
 import 'package:chat_app_client/screens/log_in_screen.dart';
 
 import '../screens/home_screen.dart';
@@ -8,11 +9,12 @@ class Routes{
     return {
       HomeScreen.ROUTE_ID: (buildContext) => HomeScreen(),
       LogInScreen.ROUTE_ID: (buildContext) => LogInScreen(),
-      SignUpScreen.ROUTE_ID: (buildContext) => SignUpScreen()
+      SignUpScreen.ROUTE_ID: (buildContext) => SignUpScreen(),
+      ChatScreen.ROUTE_ID: (buildContext) => ChatScreen()
     };
   }
 
   static initScreen(){
-    return HomeScreen.ROUTE_ID;
+    return ChatScreen.ROUTE_ID;
   }
 }
