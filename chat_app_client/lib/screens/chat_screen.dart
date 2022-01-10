@@ -95,7 +95,6 @@ class ChatScreen extends StatelessWidget {
       print(jsonData["connectionMessage"]);
       providerData.changeSocketStatus(jsonData["socketStatus"]);
     });
-
   }
 
   void sendMessage(String text, BuildContext context) {
