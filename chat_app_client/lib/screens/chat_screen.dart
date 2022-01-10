@@ -26,6 +26,16 @@ class ChatScreen extends StatelessWidget {
                   padding: EdgeInsets.all(16),
                   child: Column(
                     children: [
+                      Align(
+                        alignment: Alignment.center,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 8),
+                          child: Text('Connected Users: ${data.numOfUsers}'
+                          ,style: TextStyle(
+                              fontSize: 16
+                            ),),
+                        ),
+                      ),
                       Expanded(
                         child: ListView.builder(
                           itemCount: data.messageList.length,
@@ -99,6 +109,10 @@ class ChatScreen extends StatelessWidget {
     socket.on('connected', (jsonData) {
       print(jsonData["connectionMessage"]);
       providerData.changeSocketStatus(jsonData["socketStatus"]);
+    });
+
+    socket.on('connectedUsers', (numOfUsers){
+      providerData.updateNumOfUsers(numOfUsers);
     });
   }
 

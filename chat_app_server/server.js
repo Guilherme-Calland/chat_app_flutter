@@ -8,10 +8,16 @@ const server = app.listen(PORT, () => {
 
 const serverIO = require('socket.io')(server)
 
+// List of connected users
+const connectedUsers = new Set()
+
 // runs when established connection with a client
 serverIO.on('connection', (socket) => {
     
     console.log('Connected successfuly with client using socket', socket.id)
+
+    connectedUsers.add(socket.id)
+    serverIO.emit('connectedUsers', connectedUsers.size)
 
     //message sent to the client when connection is established
     socket.emit('connected', {
@@ -21,6 +27,8 @@ serverIO.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         console.log(socket.id, 'has disconnected from this server')
+        connectedUsers.delete(socket.id)
+        serverIO.emit('connectedUsers', connectedUsers.size)
     })
 
     //when gets a new message from a user, broadcasts it to every other user

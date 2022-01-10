@@ -5,7 +5,7 @@ import '../model/message.dart';
 class ChatAppSharedData extends ChangeNotifier{
   List<Message> messageList = [];
   String socketStatus = 'disconnected';
-
+  int numOfUsers = 0;
 
   addMessage(Message message){
     messageList.add(message);
@@ -19,6 +19,11 @@ class ChatAppSharedData extends ChangeNotifier{
 
   emptyAllMessages(){
     messageList.clear();
+    notifyListeners();
+  }
+
+  updateNumOfUsers(n){
+    numOfUsers = n;
     notifyListeners();
   }
 }
