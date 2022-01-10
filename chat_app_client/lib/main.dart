@@ -1,3 +1,4 @@
+import 'package:chat_app_client/routes/routes.dart';
 import 'package:chat_app_client/screens/chat_screen.dart';
 import 'package:chat_app_client/screens/home_screen.dart';
 import 'package:chat_app_client/shared/chat_app_shared_data.dart';
@@ -23,9 +24,8 @@ class ChatApp extends StatelessWidget {
             ),
           ),
         ),
-        home: Scaffold(
-          body: HomeScreen(),
-        ),
+        routes: Routes.routes(),
+        initialRoute: Routes.initScreen(),
       ),
     );
   }
