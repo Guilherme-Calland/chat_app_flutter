@@ -16,4 +16,9 @@ class ChatAppSharedData extends ChangeNotifier{
     socketStatus = status;
     notifyListeners();
   }
+
+  emptyAllMessages(){
+    messageList.clear();
+    notifyListeners();
+  }
 }

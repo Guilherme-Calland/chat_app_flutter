@@ -98,11 +98,18 @@ class ChatScreen extends StatelessWidget {
   }
 
   void sendMessage(String text, BuildContext context) {
-    var messageJson = {"message": text, "senderID": socket.id};
-    socket.emit("message", messageJson);
-    providerData
-        .addMessage(Message.fromJson(messageJson));
-    msgInputController.clear();
+    if(text.isNotEmpty){
+      if(socket.id == null){
+        providerData.changeSocketStatus('disconnected');
+        providerData.emptyAllMessages();
+      }else{
+        var messageJson = {"message": text, "senderID": socket.id};
+        socket.emit("message", messageJson);
+        providerData
+            .addMessage(Message.fromJson(messageJson));
+      }
+      msgInputController.clear();
+    }
   }
 }
 
