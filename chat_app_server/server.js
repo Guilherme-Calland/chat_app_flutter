@@ -14,7 +14,10 @@ serverIO.on('connection', (socket) => {
     console.log('Connected successfuly with client using socket', socket.id)
 
     //message sent to the client when connection is established
-    socket.emit('connected', 'Connected successfully with server.')
+    socket.emit('connected', {
+        "connectionMessage" : "Client connected successfully with server.",
+        "socketStatus" : "connected"
+    })
 
     socket.on('disconnect', () => {
         console.log(socket.id, 'has disconnected from this server')
@@ -26,3 +29,4 @@ serverIO.on('connection', (socket) => {
         socket.broadcast.emit('messageReceive', data)
     })
 })
+
