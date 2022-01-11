@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import '../resources/resources.dart';
 
 class MessageItem extends StatelessWidget {
-  final String message;
+  final String text;
   final bool sentByMe;
   final String sendTime;
 
-  MessageItem({required this.message, required this.sentByMe, required this.sendTime});
+  MessageItem({required this.text, required this.sentByMe, required this.sendTime});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class MessageItem extends StatelessWidget {
               color: sentByMe ? blue : green,
             ),
             child: Text(
-              message,
+              text,
               style: TextStyle(color: white, fontSize: 18),
             ),
           ),

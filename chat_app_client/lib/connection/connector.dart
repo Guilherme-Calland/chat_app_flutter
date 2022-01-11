@@ -103,7 +103,7 @@ class Connector{
         String sendTime = new DateTime.now()
             .toString()
             .substring(11, 16);
-        var messageJson = {"message": text, "senderID": socket.id, "sendTime": sendTime};
+        var messageJson = {"text": text, "sender": sharedData.currentUser.userName, "sendTime": sendTime};
         socket.emit("message", messageJson);
         sharedData
             .addMessage(Message.fromJson(messageJson));

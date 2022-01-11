@@ -42,7 +42,7 @@ serverIO.on('connection', (socket) => {
         if(validUser){
             returnData = 
             {
-                "message" : userName + ' was registered successfully.',
+                "message" : ' Registration successful.',
                 'validated' : 'yes',
                 "announcement" : userName + ' has joined the chat.'
             }

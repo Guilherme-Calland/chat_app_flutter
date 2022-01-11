@@ -52,15 +52,16 @@ class ChatScreen extends StatelessWidget {
                           reverse: true,
                           itemCount: data.messageList.length,
                           itemBuilder: (context, index) {
-                            Message item = data.messageList[index];
-                            String message = item.message ?? '[message error]';
+                            Message msg = data.messageList[index];
+                            String text = msg.text ?? '';
                             bool sentByMe =
-                                item.senderID == data.connector.socket.id;
-                            String sendTime = item.sendTime ?? '';
+                                msg.sender == data.currentUser.userName;
+                            String sendTime = msg.sendTime ?? '';
                             return MessageItem(
-                                message: message,
+                                text: text,
                                 sentByMe: sentByMe,
-                                sendTime: sendTime);
+                                sendTime: sendTime
+                            );
                           },
                         ),
                       ),
