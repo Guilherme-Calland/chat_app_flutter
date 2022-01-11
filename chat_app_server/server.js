@@ -48,12 +48,22 @@ serverIO.on('connection', (socket) => {
         var validUser = true
         connectedUsers.forEach((user) =>{
             if(user["userName"] == userName){
-                serverIO.emit('validateUser', 'This user name is already taken.')
+                serverIO.emit('validateUser',
+                    {
+                        'message' : 'This user name is already taken.',
+                        'validated' : 'no'
+                    }
+                )
                 validUser = false
             }
         })
         if(validUser){
-            serverIO.emit('validateUser', userName + ' was registered successfully.')
+            serverIO.emit('validateUser', 
+                {
+                    "message" : userName + ' was registered successfully.',
+                    'validated' : 'yes'
+                }
+            )
             connectedUsers.add(data)
         }
     })

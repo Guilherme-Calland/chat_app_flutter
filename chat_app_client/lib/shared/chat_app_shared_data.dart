@@ -43,9 +43,4 @@ class ChatAppSharedData extends ChangeNotifier{
     connector.registerUser(user);
   }
 
-  void showSignUpMessage(String msg){
-
-  }
-
-
 }

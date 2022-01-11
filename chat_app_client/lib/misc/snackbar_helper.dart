@@ -16,6 +16,7 @@ class SnackBarHelper {
           ),
         ),
         backgroundColor: color,
+        duration: Duration(seconds: 2),
       ),
     );
   }

@@ -1,4 +1,6 @@
 import 'package:chat_app_client/misc/snackbar_helper.dart';
+import 'package:chat_app_client/navigation/navigation_helper.dart';
+import 'package:chat_app_client/screens/chat_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,12 +16,13 @@ class Connector{
   late var providerData;
   late BuildContext buildContext;
   late SnackBarHelper snack;
-  Connector(BuildContext bc){
+  late NavigatorHelper nav;
+  Connector(this.buildContext){
     connectSocket();
     setUpSocketListener();
-    buildContext = bc;
     providerData = Provider.of<ChatAppSharedData>(buildContext, listen: false);
     snack = SnackBarHelper(buildContext);
+    nav = NavigatorHelper(buildContext);
   }
 
   void connectSocket() {
@@ -43,8 +46,10 @@ class Connector{
     });
 
     socket.on('validateUser', (data){
-      providerData.showSignUpMessage(data);
-      snack.display(data, blue);
+      snack.display(data["message"], blue);
+      if(data["validated"] == 'yes'){
+        nav.popAndPush(ChatScreen.ROUTE_ID);
+      }
     });
   }
 

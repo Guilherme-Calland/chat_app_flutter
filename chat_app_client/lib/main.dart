@@ -1,8 +1,9 @@
 import 'package:chat_app_client/resources/resources.dart';
-import 'package:chat_app_client/routes/routes.dart';
 import 'package:chat_app_client/shared/chat_app_shared_data.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'navigation/routes.dart';
 
 void main() => runApp(ChatApp());
 
