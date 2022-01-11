@@ -1,4 +1,5 @@
 const express = require('express')
+const { listen } = require('socket.io')
 const app = express()
 const PORT = process.env.PORT || 4000
 
@@ -8,7 +9,10 @@ const server = app.listen(PORT, () => {
 
 const serverIO = require('socket.io')(server)
 
-// List of connected users
+// List of connected sockets
+const connectedSockets = new Set()
+
+//List of connected users
 const connectedUsers = new Set()
 
 // runs when established connection with a client
@@ -16,7 +20,7 @@ serverIO.on('connection', (socket) => {
     
     console.log('Connected successfuly with client using socket', socket.id)
 
-    connectedUsers.add(socket.id)
+    connectedSockets.add(socket.id)
     serverIO.emit('connectedUsers', connectedUsers.size)
 
     //message sent to the client when connection is established
@@ -35,6 +39,23 @@ serverIO.on('connection', (socket) => {
     socket.on('message', (data) => {
         console.log(data)
         socket.broadcast.emit('messageReceive', data)
+    })
+
+    //client sends new user to validate
+    socket.on('verifyUser', (data) => {
+        console.log(data)
+        var userName = data["userName"]
+        var validUser = true
+        connectedUsers.forEach((user) =>{
+            if(user["userName"] == userName){
+                serverIO.emit('validateUser', 'This user name is already taken.')
+                validUser = false
+            }
+        })
+        if(validUser){
+            serverIO.emit('validateUser', userName + ' was registered successfully.')
+            connectedUsers.add(data)
+        }
     })
 })
 

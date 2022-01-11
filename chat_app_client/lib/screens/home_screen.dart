@@ -1,4 +1,5 @@
 import 'package:chat_app_client/resources/resources.dart';
+import 'package:chat_app_client/screens/chat_screen.dart';
 import 'package:chat_app_client/screens/log_in_screen.dart';
 import 'package:chat_app_client/screens/sign_up_screen.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +45,7 @@ class HomeScreen extends StatelessWidget {
                       LogInScreen.ROUTE_ID,
                     );
                   },
-                )
+                ),
               ],
             )
           ],
@@ -53,4 +54,3 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-

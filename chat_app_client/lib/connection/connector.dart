@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../model/message.dart';
+import '../model/user.dart';
 import '../shared/chat_app_shared_data.dart';
 
 class Connector{
@@ -34,11 +35,27 @@ class Connector{
     socket.on('connectedUsers', (numOfUsers){
       providerData.updateNumOfUsers(numOfUsers);
     });
+
+    socket.on('validateUser', (data){
+      print(data);
+    });
   }
+
+  void registerUser(User user){
+    if(disconnectedFromServer()) {
+      providerData.changeSocketStatus('disconnected');
+      providerData.emptyAllMessages();
+    }else{
+      var jsonData = user.userToJson();
+      socket.emit("verifyUser", jsonData);
+    }
+  }
+
+  bool disconnectedFromServer() => socket.id == null;
 
   void sendMessage(String text){
     if(text.isNotEmpty){
-      if(socket.id == null){
+      if(disconnectedFromServer()){
         providerData.changeSocketStatus('disconnected');
         providerData.emptyAllMessages();
       }else{

@@ -6,9 +6,10 @@ import '../resources/resources.dart';
 class CustomInputField extends StatelessWidget {
   final String? leadingText;
   final bool? autofocus;
+  final bool? obscureText;
   final txtController = TextEditingController();
   final Function(String)? callback;
-  CustomInputField({this.leadingText, this.autofocus, this.callback});
+  CustomInputField({this.leadingText, this.autofocus, this.obscureText, this.callback});
 
   @override
   Widget build(BuildContext buildContext) {
@@ -30,6 +31,7 @@ class CustomInputField extends StatelessWidget {
               borderRadius: BorderRadius.circular(4), color: Colors.white),
           padding: EdgeInsets.only(left: 8),
           child: TextField(
+            obscureText: obscureText ?? false,
             onChanged: callback,
             autofocus: autofocus ?? false,
             keyboardType: TextInputType.visiblePassword,

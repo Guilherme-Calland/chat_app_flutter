@@ -1,3 +1,4 @@
+import 'package:chat_app_client/main.dart';
 import 'package:chat_app_client/resources/resources.dart';
 import 'package:chat_app_client/shared/chat_app_shared_data.dart';
 import 'package:chat_app_client/widgets/custom_button.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import '../model/user.dart';
 import '../widgets/custom_input_field.dart';
 
 class SignUpScreen extends StatelessWidget {
@@ -65,6 +67,7 @@ class SignUpScreen extends StatelessWidget {
                     CustomInputField(
                       leadingText: 'Password',
                       callback: updatePassword,
+                      obscureText: true
                     ),
                     SizedBox(
                       height: 8,
@@ -74,7 +77,7 @@ class SignUpScreen extends StatelessWidget {
                       color: darkBlue,
                       onPressed: () {
                         if(userName.isNotEmpty && password.isNotEmpty){
-                          registerUser(userName, password);
+                          registerUser(User(userName, password), data);
                         }
                       },
                       padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
@@ -100,7 +103,7 @@ class SignUpScreen extends StatelessWidget {
     this.password = password;
   }
 
-  void registerUser(String userName, String password) {
-
+  void registerUser(User user, ChatAppSharedData sharedData) {
+    sharedData.registerUser(user);
   }
 }

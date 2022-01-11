@@ -2,6 +2,7 @@ import 'package:chat_app_client/connection/connector.dart';
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import '../model/message.dart';
+import '../model/user.dart';
 
 class ChatAppSharedData extends ChangeNotifier{
 
@@ -9,6 +10,10 @@ class ChatAppSharedData extends ChangeNotifier{
   String socketStatus = "disconnected";
   int numOfUsers = 0;
   late Connector connector;
+
+  initializeConnector(BuildContext buildContext){
+    connector = Connector(buildContext);
+  }
 
   isSocketConnected(){
     return socketStatus == "connected";
@@ -34,7 +39,7 @@ class ChatAppSharedData extends ChangeNotifier{
     notifyListeners();
   }
 
-  initializeConnector(BuildContext buildContext){
-    connector = Connector(buildContext);
+  registerUser(User user){
+    connector.registerUser(user);
   }
 }
