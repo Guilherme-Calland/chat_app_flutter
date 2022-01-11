@@ -51,6 +51,8 @@ class Connector{
         if(data["validated"] == 'yes'){
           nav.popAndPush(ChatScreen.ROUTE_ID);
         }
+      }else{
+        snack.display(data["announcement"], green);
       }
     });
 
@@ -61,6 +63,14 @@ class Connector{
         } else {
           snack.display(data["message"], blue);
         }
+      }else{
+        snack.display(data["announcement"], green);
+      }
+    });
+
+    socket.on('leave', (data){
+      if(data["socketID"] != socket.id){
+        snack.display(data["message"], red);
       }
     });
   }
@@ -68,7 +78,6 @@ class Connector{
   void signUp(User user){
     if(disconnectedFromServer()) {
       sharedData.changeSocketStatus('disconnected');
-      sharedData.emptyAllMessages();
     }else{
       var jsonData = user.userToJson();
       socket.emit("signUp", jsonData);
@@ -78,7 +87,6 @@ class Connector{
   void logIn(User user){
     if(disconnectedFromServer()) {
       sharedData.changeSocketStatus('disconnected');
-      sharedData.emptyAllMessages();
     }else{
       var jsonData = user.userToJson();
       socket.emit("logIn", jsonData);
@@ -91,7 +99,6 @@ class Connector{
     if(text.isNotEmpty){
       if(disconnectedFromServer()){
         sharedData.changeSocketStatus('disconnected');
-        sharedData.emptyAllMessages();
       }else{
         String sendTime = new DateTime.now()
             .toString()

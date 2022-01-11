@@ -43,7 +43,8 @@ serverIO.on('connection', (socket) => {
             returnData = 
             {
                 "message" : userName + ' was registered successfully.',
-                'validated' : 'yes'
+                'validated' : 'yes',
+                "announcement" : userName + ' has joined the chat.'
             }
             registeredUsers.push(data)
             onlineUsers.push(data)
@@ -83,7 +84,10 @@ serverIO.on('connection', (socket) => {
                 if(user["userName"] == userName && user["password"] == password){
                     onlineUsers.push(user)
                     validUser = true
-                    returnData = { "validated" : "yes" }                                        
+                    returnData = { 
+                        "validated" : "yes",
+                        "announcement" : userName + ' has joined the chat.'
+                    }                                        
                 }
             })
 
@@ -101,12 +105,13 @@ serverIO.on('connection', (socket) => {
     })
 
     socket.on('leave', (data) => {
-        console.log(onlineUsers)
         onlineUsers = filterUsers(onlineUsers, data)
-        console.log(onlineUsers)
+        serverIO.emit('leave', {
+            'message' : data["userName"] + ' has left the chat.',
+            'socketID' : socket.id
+        })
     })
 })
-
 
 function filterUsers(arr, value) { 
     return arr.filter(function(u){ 
