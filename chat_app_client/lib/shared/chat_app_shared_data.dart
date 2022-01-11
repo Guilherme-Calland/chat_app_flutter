@@ -11,35 +11,41 @@ class ChatAppSharedData extends ChangeNotifier{
   int numOfUsers = 0;
   late Connector connector;
 
-  initializeConnector(BuildContext buildContext){
+  void initializeConnector(BuildContext buildContext){
     connector = Connector(buildContext);
   }
 
-  isSocketConnected(){
+  bool isSocketConnected(){
     return socketStatus == "connected";
   }
 
-  addMessage(Message message){
+  void addMessage(Message message){
     messageList.insert(0, message);
     notifyListeners();
   }
 
-  changeSocketStatus(String status){
+  void changeSocketStatus(String status){
     socketStatus = status;
     notifyListeners();
   }
 
-  emptyAllMessages(){
+  void emptyAllMessages(){
     messageList.clear();
     notifyListeners();
   }
 
-  updateNumOfUsers(n){
+  void updateNumOfUsers(n){
     numOfUsers = n;
     notifyListeners();
   }
 
-  registerUser(User user){
+  void registerUser(User user){
     connector.registerUser(user);
   }
+
+  void showSignUpMessage(String msg){
+
+  }
+
+
 }

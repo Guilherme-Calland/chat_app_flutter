@@ -1,19 +1,25 @@
+import 'package:chat_app_client/misc/snackbar_helper.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../model/message.dart';
 import '../model/user.dart';
+import '../resources/resources.dart';
 import '../shared/chat_app_shared_data.dart';
 
 class Connector{
   late IO.Socket socket;
   late var providerData;
-
-  Connector(BuildContext buildContext){
+  late BuildContext buildContext;
+  late SnackBarHelper snack;
+  Connector(BuildContext bc){
     connectSocket();
     setUpSocketListener();
+    buildContext = bc;
     providerData = Provider.of<ChatAppSharedData>(buildContext, listen: false);
+    snack = SnackBarHelper(buildContext);
   }
 
   void connectSocket() {
@@ -37,7 +43,8 @@ class Connector{
     });
 
     socket.on('validateUser', (data){
-      print(data);
+      providerData.showSignUpMessage(data);
+      snack.display(data, blue);
     });
   }
 

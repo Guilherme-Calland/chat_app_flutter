@@ -30,7 +30,7 @@ serverIO.on('connection', (socket) => {
     })
 
     socket.on('disconnect', () => {
-        console.log(socket.id, 'has disconnected from this server')
+        console.log(socket.id, 'has disconnected from this server.')
         connectedUsers.delete(socket.id)
         serverIO.emit('connectedUsers', connectedUsers.size)
     })

@@ -37,12 +37,11 @@ class SignUpScreen extends StatelessWidget {
             ),
           ),
           body: data.isSocketConnected() ?
-          SingleChildScrollView(
-            child: Align(
-              alignment: Alignment.center,
+          Center(
+            child: SingleChildScrollView(
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                margin: EdgeInsets.only(top: 4),
+                margin: EdgeInsets.only(bottom: 64),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
                   color: blue,
