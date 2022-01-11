@@ -65,7 +65,9 @@ class Connector{
           snack.display(data["message"], blue);
         }
       }else{
-        snack.display(data["announcement"], green);
+        if (data["validated"] == 'yes') {
+          snack.display(data["announcement"], green);
+        }
       }
     });
 

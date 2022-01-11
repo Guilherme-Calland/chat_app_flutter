@@ -12,6 +12,7 @@ const serverIO = require('socket.io')(server)
 var onlineUsers = []
 var registeredUsers = []
 var messages = []
+var currentUser
 
 serverIO.on('connection', (socket) => {
     console.log('Connected successfuly with client using socket', socket.id)
@@ -24,6 +25,7 @@ serverIO.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         console.log(socket.id, 'has disconnected from this server.')
+        logOutUser(currentUser)
     })
 
     socket.on('message', (data) => {
@@ -33,6 +35,7 @@ serverIO.on('connection', (socket) => {
     })
 
     socket.on('signUp', (data) => {
+        currentUser = data
         console.log(data)
         var userName = data["userName"]
         var validUser = true
@@ -64,6 +67,7 @@ serverIO.on('connection', (socket) => {
     })
 
     socket.on('logIn', (data) => {
+        currentUser = data
         console.log(data)
         var userName = data["userName"]
         var password = data["password"]
@@ -108,7 +112,7 @@ serverIO.on('connection', (socket) => {
     })
 
     socket.on('leave', (data) => {
-        onlineUsers = filterUsers(onlineUsers, data)
+        logOutUser(data)
         serverIO.emit('leave', {
             'message' : data["userName"] + ' has left the chat.',
             'socketID' : socket.id
@@ -120,4 +124,8 @@ function filterUsers(arr, value) {
     return arr.filter(function(u){ 
         return u["userName"] != value["userName"]; 
     });
+}
+
+function logOutUser(user){
+    onlineUsers = filterUsers(onlineUsers, user)
 }
