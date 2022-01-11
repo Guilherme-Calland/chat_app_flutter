@@ -54,6 +54,8 @@ serverIO.on('connection', (socket) => {
                 'validated' : 'no'
             }
         }
+
+        returnData["socketID"] = socket.id
         serverIO.emit('signUp', returnData)
     })
 
@@ -93,6 +95,8 @@ serverIO.on('connection', (socket) => {
                 }
             }
         }
+        
+        returnData["socketID"] = socket.id
         serverIO.emit('logIn', returnData)
     })
 })

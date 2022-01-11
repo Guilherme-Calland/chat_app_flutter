@@ -46,17 +46,21 @@ class Connector{
     });
 
     socket.on('signUp', (data){
-      snack.display(data["message"], blue);
-      if(data["validated"] == 'yes'){
-        nav.popAndPush(ChatScreen.ROUTE_ID);
+      if(data["socketID"] == socket.id){
+        snack.display(data["message"], blue);
+        if(data["validated"] == 'yes'){
+          nav.popAndPush(ChatScreen.ROUTE_ID);
+        }
       }
     });
 
     socket.on('logIn', (data){
-      if(data["validated"] == 'yes'){
-        nav.popAndPush(ChatScreen.ROUTE_ID);
-      }else{
-        snack.display(data["message"], blue);
+      if(data["socketID"] == socket.id){
+        if (data["validated"] == 'yes') {
+          nav.popAndPush(ChatScreen.ROUTE_ID);
+        } else {
+          snack.display(data["message"], blue);
+        }
       }
     });
   }
