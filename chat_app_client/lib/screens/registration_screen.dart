@@ -10,11 +10,15 @@ import '../model/user.dart';
 import '../navigation/navigation_helper.dart';
 import '../widgets/custom_input_field.dart';
 
-class SignUpScreen extends StatelessWidget {
-  static const String ROUTE_ID = 'sign_screen';
+class RegistrationScreen extends StatelessWidget {
+  static const String SIGN_UP_ROUTE_ID = 'sign_up_screen';
+  static const String LOG_IN_ROUTE_ID = 'log_in_screen';
+  String signUpOrLogIn;
   String userName = '';
   String password = '';
   late NavigatorHelper nav;
+
+  RegistrationScreen(this.signUpOrLogIn);
 
   @override
   Widget build(BuildContext buildContext) {
@@ -43,7 +47,8 @@ class SignUpScreen extends StatelessWidget {
                 margin: EdgeInsets.only(bottom: 64),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
-                  color: blue,
+                  color: signUpOrLogIn == 'Sign Up' ?
+                  blue : darkBlue,
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -72,10 +77,12 @@ class SignUpScreen extends StatelessWidget {
                     ),
                     CustomButton(
                       text: 'Confirm',
-                      color: darkBlue,
+                      color: signUpOrLogIn == 'Sign Up' ? darkBlue : darkestBlue,
                       onPressed: () {
                         if(userName.isNotEmpty && password.isNotEmpty){
-                          signUp(User(userName, password), data);
+                          User user = User(userName, password);
+                          signUpOrLogIn == 'Sign Up' ? data.signUp(user) : data.logIn(user);
+                          data.changeCurrentUser(user);
                         }
                       },
                       padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
@@ -98,10 +105,5 @@ class SignUpScreen extends StatelessWidget {
 
   void updatePassword(String password) {
     this.password = password;
-  }
-
-  void signUp(User user, ChatAppSharedData sharedData) {
-    sharedData.signUp(user);
-    sharedData.changeCurrentUser(user);
   }
 }

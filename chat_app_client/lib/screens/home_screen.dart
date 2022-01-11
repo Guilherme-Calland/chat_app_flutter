@@ -1,6 +1,5 @@
 import 'package:chat_app_client/resources/resources.dart';
-import 'package:chat_app_client/screens/log_in_screen.dart';
-import 'package:chat_app_client/screens/sign_up_screen.dart';
+import 'package:chat_app_client/screens/registration_screen.dart';
 import 'package:chat_app_client/widgets/disconnected_message.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -42,14 +41,14 @@ class HomeScreen extends StatelessWidget {
                       text: 'Sign Up',
                       color: blue,
                       onPressed: () {
-                        nav.push(SignUpScreen.ROUTE_ID);
+                        nav.push(RegistrationScreen.SIGN_UP_ROUTE_ID);
                       },
                     ),
                     CustomButton(
-                      text: 'Log In',
+                      text: 'Log in',
                       color: darkBlue,
                       onPressed: () {
-                        nav.push(LogInScreen.ROUTE_ID);
+                        nav.push(RegistrationScreen.LOG_IN_ROUTE_ID);
                       },
                     ),
                   ],

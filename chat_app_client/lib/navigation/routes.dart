@@ -1,15 +1,13 @@
 import 'package:chat_app_client/screens/chat_screen.dart';
-import 'package:chat_app_client/screens/log_in_screen.dart';
-
 import '../screens/home_screen.dart';
-import '../screens/sign_up_screen.dart';
+import '../screens/registration_screen.dart';
 
 class Routes{
   static routes() {
     return {
       HomeScreen.ROUTE_ID: (buildContext) => HomeScreen(),
-      LogInScreen.ROUTE_ID: (buildContext) => LogInScreen(),
-      SignUpScreen.ROUTE_ID: (buildContext) => SignUpScreen(),
+      RegistrationScreen.SIGN_UP_ROUTE_ID: (buildContext) => RegistrationScreen('Sign up'),
+      RegistrationScreen.LOG_IN_ROUTE_ID: (buildContext) => RegistrationScreen('Log in'),
       ChatScreen.ROUTE_ID: (buildContext) => ChatScreen()
     };
   }
