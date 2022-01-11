@@ -53,7 +53,13 @@ class Connector{
           nav.popAndPush(ChatScreen.ROUTE_ID);
         }
       }else{
-        snack.display(data["announcement"], green);
+        if(data["validated"] == 'yes'){
+          snack.display(data["announcement"], green);
+        }
+      }
+
+      if(data["validated"] == 'yes'){
+        sharedData.updateNumOfUsers(data["numOfUsers"]);
       }
     });
 
@@ -69,12 +75,17 @@ class Connector{
           snack.display(data["announcement"], green);
         }
       }
+
+      if(data["validated"] == 'yes'){
+        sharedData.updateNumOfUsers(data["numOfUsers"]);
+      }
     });
 
     socket.on('leave', (data){
       if(data["socketID"] != socket.id){
         snack.display(data["message"], red);
       }
+      sharedData.updateNumOfUsers(data["numOfUsers"]);
     });
   }
 

@@ -63,6 +63,7 @@ serverIO.on('connection', (socket) => {
         }
 
         returnData["socketID"] = socket.id
+        returnData["numOfUsers"] = onlineUsers.length
         serverIO.emit('signUp', returnData)
     })
 
@@ -108,6 +109,7 @@ serverIO.on('connection', (socket) => {
         }
 
         returnData["socketID"] = socket.id
+        returnData["numOfUsers"] = onlineUsers.length
         serverIO.emit('logIn', returnData)
     })
 
@@ -115,7 +117,8 @@ serverIO.on('connection', (socket) => {
         logOutUser(data)
         serverIO.emit('leave', {
             'message' : data["userName"] + ' has left the chat.',
-            'socketID' : socket.id
+            'socketID' : socket.id,
+            'numOfUsers' : onlineUsers.length
         })
     })
 })
