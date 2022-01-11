@@ -62,28 +62,37 @@ serverIO.on('connection', (socket) => {
         var userName = data["userName"]
         var password = data["password"]
         var validUser = false
+        var alreadyOnline = false
         var returnData;
-        connectedUsers.forEach( (user) => {
+
+        onlineUsers.forEach( (user)=> {
             if(user["userName"] == userName){
-                if(user["password"] == password){
-                    validUser = true
+                alreadyOnline = true
+                returnData = 
+                {
+                    "validated" : "no",
+                    "message" : userName + ' is already online.'
                 }
             }
         })
-        if(validUser){
-            returnData = 
-            {
-                'message' : '',
-                'validated' : 'yes'
-            }
-        } else {
-            returnData =
-            {
-                'message' : 'User name or password are incorrect.',
-                'validated' : 'no'
+
+        if(!alreadyOnline){
+            registeredUsers.forEach( (user)=> {
+                if(user["userName"] == userName && user["password"] == password){
+                    onlineUsers.push(user)
+                    validUser = true
+                    returnData = { "validated" : "yes" }                                        
+                }
+            })
+
+            if(!validUser){
+                returnData = 
+                {
+                    "validated" : "no",
+                    "message" : "User name or password are incorrect."
+                }
             }
         }
-
         serverIO.emit('logIn', returnData)
     })
 })
