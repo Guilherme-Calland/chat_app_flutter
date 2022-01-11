@@ -9,21 +9,12 @@ const server = app.listen(PORT, () => {
 
 const serverIO = require('socket.io')(server)
 
-// List of connected sockets
-const connectedSockets = new Set()
+var onlineUsers = []
+var registeredUsers = []
 
-//List of connected users
-const connectedUsers = new Set()
-
-// runs when established connection with a client
 serverIO.on('connection', (socket) => {
-    
     console.log('Connected successfuly with client using socket', socket.id)
 
-    connectedSockets.add(socket.id)
-    serverIO.emit('connectedUsers', connectedUsers.size)
-
-    //message sent to the client when connection is established
     socket.emit('connected', {
         "connectionMessage" : "Client connected successfully with server.",
         "socketStatus" : "connected"
@@ -31,23 +22,19 @@ serverIO.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         console.log(socket.id, 'has disconnected from this server.')
-        connectedUsers.delete(socket.id)
-        serverIO.emit('connectedUsers', connectedUsers.size)
     })
 
-    //when gets a new message from a user, broadcasts it to every other user
     socket.on('message', (data) => {
         console.log(data)
         socket.broadcast.emit('messageReceive', data)
     })
 
-    //client sends new user to validate
     socket.on('signUp', (data) => {
         console.log(data)
         var userName = data["userName"]
         var validUser = true
         var returnData;
-        connectedUsers.forEach((user) =>{
+        registeredUsers.forEach((user) =>{
             if(user["userName"] == userName){
                 validUser = false
             }
@@ -58,7 +45,8 @@ serverIO.on('connection', (socket) => {
                 "message" : userName + ' was registered successfully.',
                 'validated' : 'yes'
             }
-            connectedUsers.add(data)
+            registeredUsers.push(data)
+            onlineUsers.push(data)
         }else{
             returnData =  
             {
