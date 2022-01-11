@@ -75,7 +75,7 @@ class SignUpScreen extends StatelessWidget {
                       color: darkBlue,
                       onPressed: () {
                         if(userName.isNotEmpty && password.isNotEmpty){
-                          registerUser(User(userName, password), data);
+                          signUp(User(userName, password), data);
                         }
                       },
                       padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
@@ -100,7 +100,7 @@ class SignUpScreen extends StatelessWidget {
     this.password = password;
   }
 
-  void registerUser(User user, ChatAppSharedData sharedData) {
-    sharedData.registerUser(user);
+  void signUp(User user, ChatAppSharedData sharedData) {
+    sharedData.signUp(user);
   }
 }

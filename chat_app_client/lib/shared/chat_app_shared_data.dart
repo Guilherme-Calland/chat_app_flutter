@@ -39,8 +39,12 @@ class ChatAppSharedData extends ChangeNotifier{
     notifyListeners();
   }
 
-  void registerUser(User user){
-    connector.registerUser(user);
+  void signUp(User user){
+    connector.signUp(user);
+  }
+
+  void logIn(User user){
+    connector.logIn(user);
   }
 
 }

@@ -42,30 +42,61 @@ serverIO.on('connection', (socket) => {
     })
 
     //client sends new user to validate
-    socket.on('verifyUser', (data) => {
+    socket.on('signUp', (data) => {
         console.log(data)
         var userName = data["userName"]
         var validUser = true
+        var returnData;
         connectedUsers.forEach((user) =>{
             if(user["userName"] == userName){
-                serverIO.emit('validateUser',
-                    {
-                        'message' : 'This user name is already taken.',
-                        'validated' : 'no'
-                    }
-                )
                 validUser = false
             }
         })
         if(validUser){
-            serverIO.emit('validateUser', 
-                {
-                    "message" : userName + ' was registered successfully.',
-                    'validated' : 'yes'
-                }
-            )
+            returnData = 
+            {
+                "message" : userName + ' was registered successfully.',
+                'validated' : 'yes'
+            }
             connectedUsers.add(data)
+        }else{
+            returnData =  
+            {
+                'message' : 'This user name is already taken.',
+                'validated' : 'no'
+            }
         }
+        serverIO.emit('signUp', returnData)
+    })
+
+    socket.on('logIn', (data) => {
+        console.log(data)
+        var userName = data["userName"]
+        var password = data["password"]
+        var validUser = false
+        var returnData;
+        connectedUsers.forEach( (user) => {
+            if(user["userName"] == userName){
+                if(user["password"] == password){
+                    validUser = true
+                }
+            }
+        })
+        if(validUser){
+            returnData = 
+            {
+                'message' : '',
+                'validated' : 'yes'
+            }
+        } else {
+            returnData =
+            {
+                'message' : 'User name or password are incorrect.',
+                'validated' : 'no'
+            }
+        }
+
+        serverIO.emit('logIn', returnData)
     })
 })
 

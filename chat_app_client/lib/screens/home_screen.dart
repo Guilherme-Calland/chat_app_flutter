@@ -28,11 +28,11 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
+                const Text(
                   'Chat App',
                   style: TextStyle(fontSize: 56),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 32,
                 ),
                 Row(
@@ -57,8 +57,7 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
           ):
-          DisconnectedMessage()
-          ,
+          DisconnectedMessage(),
         );
       },
     );

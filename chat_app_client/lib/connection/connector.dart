@@ -45,21 +45,39 @@ class Connector{
       providerData.updateNumOfUsers(numOfUsers);
     });
 
-    socket.on('validateUser', (data){
+    socket.on('signUp', (data){
       snack.display(data["message"], blue);
       if(data["validated"] == 'yes'){
         nav.popAndPush(ChatScreen.ROUTE_ID);
       }
     });
+
+    socket.on('logIn', (data){
+      if(data["validated"] == 'yes'){
+        nav.popAndPush(ChatScreen.ROUTE_ID);
+      }else{
+        snack.display(data["message"], blue);
+      }
+    });
   }
 
-  void registerUser(User user){
+  void signUp(User user){
     if(disconnectedFromServer()) {
       providerData.changeSocketStatus('disconnected');
       providerData.emptyAllMessages();
     }else{
       var jsonData = user.userToJson();
-      socket.emit("verifyUser", jsonData);
+      socket.emit("signUp", jsonData);
+    }
+  }
+
+  void logIn(User user){
+    if(disconnectedFromServer()) {
+      providerData.changeSocketStatus('disconnected');
+      providerData.emptyAllMessages();
+    }else{
+      var jsonData = user.userToJson();
+      socket.emit("logIn", jsonData);
     }
   }
 
