@@ -56,7 +56,7 @@ class RegistrationScreen extends StatelessWidget {
                   children: [
                     SizedBox(height: 8),
                     Text(
-                      'Sign Up',
+                      signUpOrLogIn,
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 32),
                     ),
                     SizedBox(

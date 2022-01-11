@@ -6,7 +6,7 @@ class Routes{
   static routes() {
     return {
       HomeScreen.ROUTE_ID: (buildContext) => HomeScreen(),
-      RegistrationScreen.SIGN_UP_ROUTE_ID: (buildContext) => RegistrationScreen('Sign up'),
+      RegistrationScreen.SIGN_UP_ROUTE_ID: (buildContext) => RegistrationScreen('Sign Up'),
       RegistrationScreen.LOG_IN_ROUTE_ID: (buildContext) => RegistrationScreen('Log in'),
       ChatScreen.ROUTE_ID: (buildContext) => ChatScreen()
     };
