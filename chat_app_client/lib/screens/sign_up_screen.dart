@@ -11,9 +11,9 @@ import '../navigation/navigation_helper.dart';
 import '../widgets/custom_input_field.dart';
 
 class SignUpScreen extends StatelessWidget {
-  static const String ROUTE_ID = 'sign_up_screen';
-  late String userName;
-  late String password;
+  static const String ROUTE_ID = 'sign_screen';
+  String userName = '';
+  String password = '';
   late NavigatorHelper nav;
 
   @override
@@ -102,5 +102,6 @@ class SignUpScreen extends StatelessWidget {
 
   void signUp(User user, ChatAppSharedData sharedData) {
     sharedData.signUp(user);
+    sharedData.changeCurrentUser(user);
   }
 }

@@ -95,9 +95,21 @@ serverIO.on('connection', (socket) => {
                 }
             }
         }
-        
+
         returnData["socketID"] = socket.id
         serverIO.emit('logIn', returnData)
     })
+
+    socket.on('leave', (data) => {
+        console.log(onlineUsers)
+        onlineUsers = filterUsers(onlineUsers, data)
+        console.log(onlineUsers)
+    })
 })
 
+
+function filterUsers(arr, value) { 
+    return arr.filter(function(u){ 
+        return u["userName"] != value["userName"]; 
+    });
+}

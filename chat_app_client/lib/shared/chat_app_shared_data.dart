@@ -10,6 +10,7 @@ class ChatAppSharedData extends ChangeNotifier{
   String socketStatus = "disconnected";
   int numOfUsers = 0;
   late Connector connector;
+  late User currentUser;
 
   void initializeConnector(BuildContext buildContext){
     connector = Connector(buildContext);
@@ -45,6 +46,11 @@ class ChatAppSharedData extends ChangeNotifier{
 
   void logIn(User user){
     connector.logIn(user);
+  }
+
+  void changeCurrentUser(User user){
+    currentUser = user;
+    notifyListeners();
   }
 
 }

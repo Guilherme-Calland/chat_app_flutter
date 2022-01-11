@@ -11,8 +11,8 @@ import '../widgets/disconnected_message.dart';
 
 class LogInScreen extends StatelessWidget {
   static const ROUTE_ID = 'log_in_screen';
-  late String userName;
-  late String password;
+  late String userName = '';
+  late String password = '';
   late NavigatorHelper nav;
 
   @override
@@ -101,5 +101,6 @@ class LogInScreen extends StatelessWidget {
 
   void logIn(User user, ChatAppSharedData sharedData) {
     sharedData.logIn(user);
+    sharedData.changeCurrentUser(user);
   }
 }

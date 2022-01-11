@@ -13,14 +13,14 @@ import '../shared/chat_app_shared_data.dart';
 
 class Connector{
   late IO.Socket socket;
-  late var providerData;
+  late var sharedData;
   late BuildContext buildContext;
   late SnackBarHelper snack;
   late NavigatorHelper nav;
   Connector(this.buildContext){
     connectSocket();
     setUpSocketListener();
-    providerData = Provider.of<ChatAppSharedData>(buildContext, listen: false);
+    sharedData = Provider.of<ChatAppSharedData>(buildContext, listen: false);
     snack = SnackBarHelper(buildContext);
     nav = NavigatorHelper(buildContext);
   }
@@ -32,17 +32,17 @@ class Connector{
 
   void setUpSocketListener() {
     socket.on('messageReceive', (jsonData) {
-      providerData
+      sharedData
           .addMessage(Message.fromJson(jsonData));
     });
 
     socket.on('connected', (jsonData) {
       print(jsonData["connectionMessage"]);
-      providerData.changeSocketStatus(jsonData["socketStatus"]);
+      sharedData.changeSocketStatus(jsonData["socketStatus"]);
     });
 
     socket.on('connectedUsers', (numOfUsers){
-      providerData.updateNumOfUsers(numOfUsers);
+      sharedData.updateNumOfUsers(numOfUsers);
     });
 
     socket.on('signUp', (data){
@@ -67,8 +67,8 @@ class Connector{
 
   void signUp(User user){
     if(disconnectedFromServer()) {
-      providerData.changeSocketStatus('disconnected');
-      providerData.emptyAllMessages();
+      sharedData.changeSocketStatus('disconnected');
+      sharedData.emptyAllMessages();
     }else{
       var jsonData = user.userToJson();
       socket.emit("signUp", jsonData);
@@ -77,8 +77,8 @@ class Connector{
 
   void logIn(User user){
     if(disconnectedFromServer()) {
-      providerData.changeSocketStatus('disconnected');
-      providerData.emptyAllMessages();
+      sharedData.changeSocketStatus('disconnected');
+      sharedData.emptyAllMessages();
     }else{
       var jsonData = user.userToJson();
       socket.emit("logIn", jsonData);
@@ -90,17 +90,21 @@ class Connector{
   void sendMessage(String text){
     if(text.isNotEmpty){
       if(disconnectedFromServer()){
-        providerData.changeSocketStatus('disconnected');
-        providerData.emptyAllMessages();
+        sharedData.changeSocketStatus('disconnected');
+        sharedData.emptyAllMessages();
       }else{
         String sendTime = new DateTime.now()
             .toString()
             .substring(11, 16);
         var messageJson = {"message": text, "senderID": socket.id, "sendTime": sendTime};
         socket.emit("message", messageJson);
-        providerData
+        sharedData
             .addMessage(Message.fromJson(messageJson));
       }
     }
+  }
+
+  void leave(){
+    socket.emit('leave', sharedData.currentUser.userToJson());
   }
 }
