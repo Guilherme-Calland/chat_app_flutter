@@ -5,7 +5,7 @@ class Message{
 
   Message({required this.text, required this.sender, required this.sendTime});
 
-  Message.fromJson(Map<String, dynamic> data){
+  Message.fromJson(Map data){
     text = data["text"];
     sender = data["sender"];
     sendTime = data["sendTime"];

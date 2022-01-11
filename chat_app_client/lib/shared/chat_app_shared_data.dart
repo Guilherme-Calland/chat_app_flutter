@@ -16,6 +16,15 @@ class ChatAppSharedData extends ChangeNotifier{
     connector = Connector(buildContext);
   }
 
+  void retreiveMessages(List<dynamic> data){
+    List<Message> tempList = [];
+    for (var m in data) {
+      tempList.add(Message.fromJson(m));
+    }
+    messageList = tempList;
+    notifyListeners();
+  }
+
   bool isSocketConnected(){
     return socketStatus == "connected";
   }

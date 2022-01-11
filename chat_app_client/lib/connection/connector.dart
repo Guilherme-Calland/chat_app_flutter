@@ -39,6 +39,7 @@ class Connector{
     socket.on('connected', (jsonData) {
       print(jsonData["connectionMessage"]);
       sharedData.changeSocketStatus(jsonData["socketStatus"]);
+      sharedData.retreiveMessages(jsonData["serverMessages"]);
     });
 
     socket.on('connectedUsers', (numOfUsers){

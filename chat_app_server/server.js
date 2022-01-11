@@ -11,13 +11,15 @@ const serverIO = require('socket.io')(server)
 
 var onlineUsers = []
 var registeredUsers = []
+var messages = []
 
 serverIO.on('connection', (socket) => {
     console.log('Connected successfuly with client using socket', socket.id)
 
     socket.emit('connected', {
         "connectionMessage" : "Client connected successfully with server.",
-        "socketStatus" : "connected"
+        "socketStatus" : "connected",
+        "serverMessages" : messages
     })
 
     socket.on('disconnect', () => {
@@ -26,6 +28,7 @@ serverIO.on('connection', (socket) => {
 
     socket.on('message', (data) => {
         console.log(data)
+        messages.push(data)
         socket.broadcast.emit('messageReceive', data)
     })
 
