@@ -72,16 +72,18 @@ class ChatScreen extends StatelessWidget {
                           itemCount: data.messageList.length,
                           itemBuilder: (context, index) {
                             Message msg = data.messageList[index];
+                            String sender = msg.sender ?? '';
                             String text = msg.text ?? '';
                             bool sentByMe =
-                                msg.sender == data.currentUser.userName;
+                                sender == data.currentUser.userName;
                             String sendTime = msg.sendTime ?? '';
-                            Color msgColor = themeToColor(msg.theme);
+                            Color color = themeToColor(msg.theme);
                             return MessageItem(
                                 text: text,
                                 sentByMe: sentByMe,
                                 sendTime: sendTime,
-                                color: msgColor
+                                color: color,
+                                sender: sender,
                             );
                           },
                         ),

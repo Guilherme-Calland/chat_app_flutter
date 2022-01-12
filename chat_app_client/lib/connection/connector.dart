@@ -131,4 +131,8 @@ class Connector {
   void leave() {
     socket.emit('leave', sharedData.currentUser.userToJson());
   }
+
+  void updateUser(){
+    socket.emit('updateUser', sharedData.currentUser.userToJson());
+  }
 }

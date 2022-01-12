@@ -15,14 +15,22 @@ var messages = []
 var currentUser
 
 serverIO.on('connection', (socket) => {
-    socket.emit('connected', serverData())
+    socket.emit('connected', sendServerData())
+    socket.on('disconnect', () => { leaveServer( currentUser, socket.id) } )
     socket.on('message', (msg) => { onMessage(msg, socket)} )
     socket.on('signUp', (user) => { signUp(user, socket.id)} )
     socket.on('logIn', (user) => { logIn(user, socket.id)} )
     socket.on('leave', (user) => { leaveServer(user, socket.id)} )
+    socket.on('updateUser', (user) => { updateUser(user) } )
 })
 
-function serverData(){
+function updateUser(user){
+    registeredUsers = filterUsers(registeredUsers, user)
+    registeredUsers.push(user) 
+    currentUser = user
+}
+
+function sendServerData(){
     var data =
     {
         "connectionMessage" : "Client connected successfully with server.",
@@ -54,6 +62,7 @@ function signUp(data, socketID){
             'validated' : 'yes',
             "announcement" : userName + ' has joined the chat.'
         }
+        currentUser = data
         registeredUsers.push(data)
         onlineUsers.push(data)
     }else{
@@ -70,7 +79,6 @@ function signUp(data, socketID){
 }
 
 function logIn(data, socketID){
-    currentUser = data
     var userName = data["userName"]
     var password = data["password"]
     var validUser = false
@@ -92,6 +100,7 @@ function logIn(data, socketID){
         registeredUsers.forEach( (user)=> {
             if(user["userName"] == userName && user["password"] == password){
                 onlineUsers.push(user)
+                currentUser = data
                 validUser = true
                 returnData = { 
                     "validated" : "yes",
@@ -116,6 +125,7 @@ function logIn(data, socketID){
 }
 
 function leaveServer(data, socketID){
+    print(onlineUsers)
     logOutUser(data)
     serverIO.emit('leave', {
         'message' : data["userName"] + ' has left the chat.',
@@ -132,7 +142,5 @@ function filterUsers(arr, value) {
 
 function logOutUser(user){
     onlineUsers = filterUsers(onlineUsers, user)
-    registeredUsers = filterUsers(registeredUsers, user)
-    registeredUsers.push(user) 
 }
 

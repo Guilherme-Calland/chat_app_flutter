@@ -6,37 +6,59 @@ class MessageItem extends StatelessWidget {
   final bool sentByMe;
   final String sendTime;
   final Color color;
+  final String sender;
 
-  MessageItem({required this.text, required this.sentByMe, required this.sendTime, required this.color});
+  MessageItem(
+      {required this.text,
+      required this.sentByMe,
+      required this.sendTime,
+      required this.color,
+      required this.sender});
 
   @override
   Widget build(BuildContext context) {
     return Align(
       alignment: sentByMe ? Alignment.centerLeft : Alignment.centerRight,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              color: color,
-            ),
+            margin: EdgeInsets.only(left: 12, top: 12),
             child: Text(
-              text,
-              style: TextStyle(color: white, fontSize: 18),
+              sender,
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                fontSize: 16,
+                color: white.withOpacity(0.7)
+              ),
             ),
           ),
-          Text(
-            sendTime,
-            style: TextStyle(
-              color: white.withOpacity(0.7),
-              fontSize: 10,
-            ),
-          ),
-          const SizedBox(
-            width: 5,
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: color,
+                ),
+                child: Text(
+                  text,
+                  style: TextStyle(color: white, fontSize: 18),
+                ),
+              ),
+              Text(
+                sendTime,
+                style: TextStyle(
+                  color: white.withOpacity(0.7),
+                  fontSize: 10,
+                ),
+              ),
+              const SizedBox(
+                width: 4,
+              ),
+            ],
           ),
         ],
       ),

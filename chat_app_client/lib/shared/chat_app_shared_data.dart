@@ -71,6 +71,7 @@ class ChatAppSharedData extends ChangeNotifier{
 
   void changeCurrentUserTheme(String theme){
     currentUser.theme = theme;
+    connector.updateUser();
     notifyListeners();
   }
 
