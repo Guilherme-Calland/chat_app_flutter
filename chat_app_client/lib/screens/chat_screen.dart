@@ -1,10 +1,14 @@
 import 'package:chat_app_client/shared/chat_app_shared_data.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import '../connection/connector.dart';
 import '../model/message.dart';
 import '../navigation/navigation_helper.dart';
 import '../resources/resources.dart';
+import '../widgets/brush_button.dart';
+import '../widgets/color_box.dart';
 import '../widgets/disconnected_message.dart';
 import '../widgets/message_item.dart';
 
@@ -21,9 +25,53 @@ class ChatScreen extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title: Text(
-              '${data.currentUser.userName}', style: TextStyle(fontSize: 24),),
+              '${data.currentUser.userName}',
+              style: TextStyle(fontSize: 24),
+            ),
             centerTitle: true,
             backgroundColor: data.currentUser.themeToColor(),
+            actions: [
+              Container(
+                child: !data.colorOptionsEnabled
+                    ? Container(
+                        margin: EdgeInsets.only(right: 16),
+                        child: BrushButton(
+                          onTap: () => data.showColorOptions(),
+                        ),
+                      )
+                    : Container(
+                        child: Row(
+                          children: [
+                            Container(
+                                margin: EdgeInsets.only(right: 16),
+                                child: BrushButton(
+                                    onTap: () => data.hideColorOptions())),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    ColorBox(color: blue),
+                                    ColorBox(color: purple),
+                                    ColorBox(color: pink),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    ColorBox(color: red),
+                                    ColorBox(color: orange),
+                                    ColorBox(color: green),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+              )
+            ],
             leading: GestureDetector(
               onTap: () {
                 nav.pop();
@@ -63,8 +111,7 @@ class ChatScreen extends StatelessWidget {
                             return MessageItem(
                                 text: text,
                                 sentByMe: sentByMe,
-                                sendTime: sendTime
-                            );
+                                sendTime: sendTime);
                           },
                         ),
                       ),

@@ -12,6 +12,7 @@ class ChatAppSharedData extends ChangeNotifier{
   int numOfUsers = 0;
   late Connector connector;
   late User currentUser;
+  bool colorOptionsEnabled = false;
 
   void initializeConnector(BuildContext buildContext){
     connector = Connector(buildContext);
@@ -60,6 +61,16 @@ class ChatAppSharedData extends ChangeNotifier{
 
   void changeCurrentUser(User user){
     currentUser = user;
+    notifyListeners();
+  }
+
+  void showColorOptions(){
+    colorOptionsEnabled = true;
+    notifyListeners();
+  }
+
+  void hideColorOptions(){
+    colorOptionsEnabled = false;
     notifyListeners();
   }
 }
