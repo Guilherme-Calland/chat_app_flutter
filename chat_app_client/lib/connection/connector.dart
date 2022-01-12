@@ -11,13 +11,14 @@ import '../model/user.dart';
 import '../resources/resources.dart';
 import '../shared/chat_app_shared_data.dart';
 
-class Connector{
+class Connector {
   late IO.Socket socket;
   late var sharedData;
   late BuildContext buildContext;
   late SnackBarHelper snack;
   late NavigatorHelper nav;
-  Connector(this.buildContext){
+
+  Connector(this.buildContext) {
     connectSocket();
     setUpSocketListener();
     sharedData = Provider.of<ChatAppSharedData>(buildContext, listen: false);
@@ -32,8 +33,7 @@ class Connector{
 
   void setUpSocketListener() {
     socket.on('messageReceive', (jsonData) {
-      sharedData
-          .addMessage(Message.fromJson(jsonData));
+      sharedData.addMessage(Message.fromJson(jsonData));
     });
 
     socket.on('connected', (jsonData) {
@@ -42,66 +42,66 @@ class Connector{
       sharedData.retreiveMessages(jsonData["serverMessages"]);
     });
 
-    socket.on('connectedUsers', (numOfUsers){
+    socket.on('connectedUsers', (numOfUsers) {
       sharedData.updateNumOfUsers(numOfUsers);
     });
 
-    socket.on('signUp', (data){
-      if(data["socketID"] == socket.id){
+    socket.on('signUp', (data) {
+      if (data["socketID"] == socket.id) {
         snack.display(data["message"], blue);
-        if(data["validated"] == 'yes'){
+        if (data["validated"] == 'yes') {
           nav.popAndPush(ChatScreen.ROUTE_ID);
         }
-      }else{
-        if(data["validated"] == 'yes'){
+      } else {
+        if (data["validated"] == 'yes') {
           snack.display(data["announcement"], green);
         }
       }
 
-      if(data["validated"] == 'yes'){
+      if (data["validated"] == 'yes') {
         sharedData.updateNumOfUsers(data["numOfUsers"]);
       }
     });
 
-    socket.on('logIn', (data){
-      if(data["socketID"] == socket.id){
+    socket.on('logIn', (data) {
+      if (data["socketID"] == socket.id) {
         if (data["validated"] == 'yes') {
           nav.popAndPush(ChatScreen.ROUTE_ID);
         } else {
           snack.display(data["message"], blue);
         }
-      }else{
+      } else {
         if (data["validated"] == 'yes') {
           snack.display(data["announcement"], green);
         }
       }
 
-      if(data["validated"] == 'yes'){
+      if (data["validated"] == 'yes') {
         sharedData.updateNumOfUsers(data["numOfUsers"]);
       }
     });
 
-    socket.on('leave', (data){
-      if(data["socketID"] != socket.id){
+    socket.on('leave', (data) {
+      if (data["socketID"] != socket.id) {
         snack.display(data["message"], red);
       }
       sharedData.updateNumOfUsers(data["numOfUsers"]);
     });
   }
 
-  void signUp(User user){
-    if(disconnectedFromServer()) {
+  void signUp(User user) {
+    if (disconnectedFromServer()) {
       sharedData.changeSocketStatus('disconnected');
-    }else{
+    } else {
       var jsonData = user.userToJson();
       socket.emit("signUp", jsonData);
     }
   }
 
-  void logIn(User user){
-    if(disconnectedFromServer()) {
+  void logIn(User user) {
+    if (disconnectedFromServer()) {
       sharedData.changeSocketStatus('disconnected');
-    }else{
+    } else {
       var jsonData = user.userToJson();
       socket.emit("logIn", jsonData);
     }
@@ -109,23 +109,25 @@ class Connector{
 
   bool disconnectedFromServer() => socket.id == null;
 
-  void sendMessage(String text){
-    if(text.isNotEmpty){
-      if(disconnectedFromServer()){
+  void sendMessage(String text, User user) {
+    if (text.isNotEmpty) {
+      if (disconnectedFromServer()) {
         sharedData.changeSocketStatus('disconnected');
-      }else{
-        String sendTime = new DateTime.now()
-            .toString()
-            .substring(11, 16);
-        var messageJson = {"text": text, "sender": sharedData.currentUser.userName, "sendTime": sendTime};
+      } else {
+        String sendTime = new DateTime.now().toString().substring(11, 16);
+        var messageJson = {
+          "text": text,
+          "sender": user.userName,
+          "sendTime": sendTime,
+          "theme": user.theme
+        };
         socket.emit("message", messageJson);
-        sharedData
-            .addMessage(Message.fromJson(messageJson));
+        sharedData.addMessage(Message.fromJson(messageJson));
       }
     }
   }
 
-  void leave(){
+  void leave() {
     socket.emit('leave', sharedData.currentUser.userToJson());
   }
 }

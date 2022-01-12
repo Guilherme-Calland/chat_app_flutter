@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import '../misc/utils.dart';
 import '../model/message.dart';
+import '../model/user.dart';
 import '../navigation/navigation_helper.dart';
 import '../resources/resources.dart';
 import '../widgets/custom_arrow_button.dart';
@@ -75,10 +76,13 @@ class ChatScreen extends StatelessWidget {
                             bool sentByMe =
                                 msg.sender == data.currentUser.userName;
                             String sendTime = msg.sendTime ?? '';
+                            Color msgColor = themeToColor(msg.theme);
                             return MessageItem(
                                 text: text,
                                 sentByMe: sentByMe,
-                                sendTime: sendTime);
+                                sendTime: sendTime,
+                                color: msgColor
+                            );
                           },
                         ),
                       ),
@@ -118,7 +122,8 @@ class ChatScreen extends StatelessWidget {
   }
 
   void sendMessage(String text, ChatAppSharedData sharedData) {
-    sharedData.connector.sendMessage(text);
+    User user = sharedData.currentUser;
+    sharedData.connector.sendMessage(text, user);
     msgInputController.clear();
   }
 }

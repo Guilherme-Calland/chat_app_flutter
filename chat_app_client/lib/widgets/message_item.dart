@@ -5,8 +5,9 @@ class MessageItem extends StatelessWidget {
   final String text;
   final bool sentByMe;
   final String sendTime;
+  final Color color;
 
-  MessageItem({required this.text, required this.sentByMe, required this.sendTime});
+  MessageItem({required this.text, required this.sentByMe, required this.sendTime, required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,7 @@ class MessageItem extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
-              color: sentByMe ? blue : green,
+              color: color,
             ),
             child: Text(
               text,
