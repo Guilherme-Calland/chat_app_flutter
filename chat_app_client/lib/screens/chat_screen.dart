@@ -1,14 +1,14 @@
 import 'package:chat_app_client/shared/chat_app_shared_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import '../misc/utils.dart';
 import '../model/message.dart';
 import '../navigation/navigation_helper.dart';
 import '../resources/resources.dart';
-import '../widgets/brush_button.dart';
-import '../widgets/color_box.dart';
+import '../widgets/custom_arrow_button.dart';
 import '../widgets/disconnected_message.dart';
 import '../widgets/message_item.dart';
 import '../widgets/user_theme_collor_control.dart';
@@ -17,6 +17,7 @@ class ChatScreen extends StatelessWidget {
   static const ROUTE_ID = 'chat_screen';
   var msgInputController = TextEditingController();
   late NavigatorHelper nav;
+  var focusNode = FocusNode();
 
   @override
   Widget build(BuildContext buildContext) {
@@ -32,7 +33,11 @@ class ChatScreen extends StatelessWidget {
             centerTitle: true,
             backgroundColor: themeToColor(data.currentUser.theme),
             actions: [
-              UserThemeColorControl()
+              UserThemeColorControl(
+                callback: () {
+                  focusNode.requestFocus();
+                },
+              ),
             ],
             leading: GestureDetector(
               onTap: () {
@@ -80,6 +85,10 @@ class ChatScreen extends StatelessWidget {
                       Container(
                         margin: EdgeInsets.only(top: 8),
                         child: TextField(
+                          focusNode: focusNode,
+                          textInputAction: TextInputAction.none,
+                          onSubmitted: (text) => sendMessage(text, data),
+                          autofocus: true,
                           style: TextStyle(color: white),
                           cursorColor: blue,
                           controller: msgInputController,
@@ -92,18 +101,9 @@ class ChatScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(10)),
                             suffixIcon: Container(
                               margin: EdgeInsets.only(right: 10),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: blue),
-                              child: IconButton(
-                                onPressed: () {
-                                  sendMessage(msgInputController.text, data);
-                                },
-                                icon: Icon(
-                                  Icons.send,
-                                  color: white,
-                                ),
-                              ),
+                              child: CustomArrowButton(
+                                  onPressed: () => sendMessage(
+                                      msgInputController.text, data)),
                             ),
                           ),
                         ),
@@ -122,5 +122,3 @@ class ChatScreen extends StatelessWidget {
     msgInputController.clear();
   }
 }
-
-

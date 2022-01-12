@@ -64,13 +64,8 @@ class ChatAppSharedData extends ChangeNotifier{
     notifyListeners();
   }
 
-  void showColorOptions(){
-    colorOptionsEnabled = true;
-    notifyListeners();
-  }
-
-  void hideColorOptions(){
-    colorOptionsEnabled = false;
+  void toggleColorOptions(){
+    colorOptionsEnabled = !colorOptionsEnabled;
     notifyListeners();
   }
 
@@ -78,4 +73,5 @@ class ChatAppSharedData extends ChangeNotifier{
     currentUser.theme = theme;
     notifyListeners();
   }
+
 }

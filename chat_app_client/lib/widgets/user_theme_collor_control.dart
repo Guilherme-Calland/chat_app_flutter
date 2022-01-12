@@ -7,7 +7,10 @@ import 'brush_button.dart';
 import 'color_box.dart';
 
 class UserThemeColorControl extends StatelessWidget {
-  UserThemeColorControl();
+  Function() callback;
+
+  UserThemeColorControl({required this.callback});
+
   @override
   Widget build(BuildContext context) {
     return Consumer<ChatAppSharedData>(
@@ -17,7 +20,10 @@ class UserThemeColorControl extends StatelessWidget {
               ? Container(
             margin: const EdgeInsets.only(right: 16),
             child: BrushButton(
-              onTap: () => data.showColorOptions(),
+              onTap: (){
+                data.toggleColorOptions();
+                callback();
+              },
             ),
           )
               : Row(
@@ -25,7 +31,10 @@ class UserThemeColorControl extends StatelessWidget {
               Container(
                 margin: const EdgeInsets.only(right: 16),
                 child: BrushButton(
-                  onTap: () => data.hideColorOptions(),
+                  onTap: (){
+                    data.toggleColorOptions();
+                    callback();
+                  },
                 ),
               ),
               Column(
@@ -34,17 +43,17 @@ class UserThemeColorControl extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ColorBox(theme: 'blue'),
-                      ColorBox(theme: 'purple'),
-                      ColorBox(theme: 'pink'),
+                      ColorBox(theme: 'blue', callback: callback),
+                      ColorBox(theme: 'purple', callback: callback),
+                      ColorBox(theme: 'pink', callback: callback),
                     ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ColorBox(theme: 'red'),
-                      ColorBox(theme: 'orange'),
-                      ColorBox(theme: 'green'),
+                      ColorBox(theme: 'red', callback: callback),
+                      ColorBox(theme: 'orange', callback: callback),
+                      ColorBox(theme: 'green', callback: callback),
                     ],
                   )
                 ],

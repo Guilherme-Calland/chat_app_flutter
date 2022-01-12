@@ -5,15 +5,17 @@ import '../resources/resources.dart';
 import '../shared/chat_app_shared_data.dart';
 
 class ColorBox extends StatelessWidget {
+  Function() callback;
   String theme;
-  ColorBox({required this.theme});
+  ColorBox({required this.callback, required this.theme});
 
   @override
   Widget build(BuildContext context) {
     return Consumer<ChatAppSharedData>(
       builder: (_, data, __) {
         return GestureDetector(
-          onTap: () {
+          onTap: (){
+            callback();
             data.changeCurrentUserTheme(theme);
           },
           child: Container(
