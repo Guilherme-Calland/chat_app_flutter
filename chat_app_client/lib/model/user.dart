@@ -5,24 +5,15 @@ import '../resources/resources.dart';
 class User{
   String? userName;
   String? password;
-  String themeColor;
+  String theme;
 
-  User(this.userName, this.password, {this.themeColor = 'blue'});
+  User(this.userName, this.password, {this.theme= 'blue'});
 
   Map userToJson(){
     Map json = {
-      "userName" : this.userName,
-      "password" : this.password
+      "userName" : userName,
+      "password" : password
     };
     return json;
-  }
-
-  Color themeToColor(){
-    Color color = blue;
-    switch(themeColor){
-      case 'blue' : color = blue; break;
-      case 'red' : color = red; break;
-    }
-    return color;
   }
 }

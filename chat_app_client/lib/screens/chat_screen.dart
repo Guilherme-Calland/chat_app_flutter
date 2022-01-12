@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import '../connection/connector.dart';
+import '../misc/utils.dart';
 import '../model/message.dart';
 import '../navigation/navigation_helper.dart';
 import '../resources/resources.dart';
@@ -11,6 +11,7 @@ import '../widgets/brush_button.dart';
 import '../widgets/color_box.dart';
 import '../widgets/disconnected_message.dart';
 import '../widgets/message_item.dart';
+import '../widgets/user_theme_collor_control.dart';
 
 class ChatScreen extends StatelessWidget {
   static const ROUTE_ID = 'chat_screen';
@@ -29,48 +30,9 @@ class ChatScreen extends StatelessWidget {
               style: TextStyle(fontSize: 24),
             ),
             centerTitle: true,
-            backgroundColor: data.currentUser.themeToColor(),
+            backgroundColor: themeToColor(data.currentUser.theme),
             actions: [
-              Container(
-                child: !data.colorOptionsEnabled
-                    ? Container(
-                        margin: EdgeInsets.only(right: 16),
-                        child: BrushButton(
-                          onTap: () => data.showColorOptions(),
-                        ),
-                      )
-                    : Container(
-                        child: Row(
-                          children: [
-                            Container(
-                                margin: EdgeInsets.only(right: 16),
-                                child: BrushButton(
-                                    onTap: () => data.hideColorOptions())),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    ColorBox(color: blue),
-                                    ColorBox(color: purple),
-                                    ColorBox(color: pink),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    ColorBox(color: red),
-                                    ColorBox(color: orange),
-                                    ColorBox(color: green),
-                                  ],
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-              )
+              UserThemeColorControl()
             ],
             leading: GestureDetector(
               onTap: () {
@@ -160,3 +122,5 @@ class ChatScreen extends StatelessWidget {
     msgInputController.clear();
   }
 }
+
+
