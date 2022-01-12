@@ -9,6 +9,7 @@ class ChatAppSharedData extends ChangeNotifier{
 
   List<Message> messageList = [];
   String socketStatus = "disconnected";
+  bool loggedIn = false;
   int numOfUsers = 0;
   late Connector connector;
   late User currentUser;
@@ -21,7 +22,7 @@ class ChatAppSharedData extends ChangeNotifier{
   void retreiveMessages(List<dynamic> data){
     List<Message> tempList = [];
     for (var m in data) {
-      tempList.add(Message.fromJson(m));
+      tempList.insert(0, Message.fromJson(m));
     }
     messageList = tempList;
     notifyListeners();
@@ -73,6 +74,11 @@ class ChatAppSharedData extends ChangeNotifier{
     currentUser.theme = theme;
     connector.updateUser();
     notifyListeners();
+  }
+
+  void changeLoggedStatus(bool b){
+     loggedIn = b;
+     notifyListeners();
   }
 
 }

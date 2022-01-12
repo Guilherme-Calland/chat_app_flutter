@@ -12,22 +12,27 @@ const serverIO = require('socket.io')(server)
 var onlineUsers = []
 var registeredUsers = []
 var messages = []
-var currentUser
 
 serverIO.on('connection', (socket) => {
-    socket.emit('connected', sendServerData())
-    socket.on('disconnect', () => { leaveServer( currentUser, socket.id) } )
+    serverIO.emit('connected', sendServerData())
+    socket.on('disconnect', () => { onUserLeave() } )
+    socket.on('signal', (data) => { updateOnlineUsers(data) })
     socket.on('message', (msg) => { onMessage(msg, socket)} )
-    socket.on('signUp', (user) => { signUp(user, socket.id)} )
-    socket.on('logIn', (user) => { logIn(user, socket.id)} )
-    socket.on('leave', (user) => { leaveServer(user, socket.id)} )
-    socket.on('updateUser', (user) => { updateUser(user) } )
+    socket.on('signUp', (data) => { signUp(data, socket.id)} )
+    socket.on('logIn', (data) => { logIn(data, socket.id)} )
+    socket.on('updateUser', (data) => { updateUser(data) } )
+    socket.on('leave', () => { onUserLeave() })
 })
 
+function updateOnlineUsers(user){
+    onlineUsers.push(user)
+    serverIO.emit('updatedListNum', onlineUsers.length)
+    console.log(onlineUsers)
+}
+
 function updateUser(user){
-    registeredUsers = filterUsers(registeredUsers, user)
+    registeredUsers = filterUser(registeredUsers, user)
     registeredUsers.push(user) 
-    currentUser = user
 }
 
 function sendServerData(){
@@ -60,7 +65,6 @@ function signUp(data, socketID){
         {
             "message" : ' Registration successful.',
             'validated' : 'yes',
-            "announcement" : userName + ' has joined the chat.'
         }
         currentUser = data
         registeredUsers.push(data)
@@ -76,6 +80,7 @@ function signUp(data, socketID){
     returnData["socketID"] = socketID
     returnData["numOfUsers"] = onlineUsers.length
     serverIO.emit('signUp', returnData)
+    console.log(onlineUsers)
 }
 
 function logIn(data, socketID){
@@ -104,7 +109,6 @@ function logIn(data, socketID){
                 validUser = true
                 returnData = { 
                     "validated" : "yes",
-                    "announcement" : userName + ' has joined the chat.',
                     "theme" : user["theme"]
                 }                                        
             }
@@ -122,25 +126,17 @@ function logIn(data, socketID){
     returnData["socketID"] = socketID
     returnData["numOfUsers"] = onlineUsers.length
     serverIO.emit('logIn', returnData)
+    console.log(onlineUsers)
 }
 
-function leaveServer(data, socketID){
-    print(onlineUsers)
-    logOutUser(data)
-    serverIO.emit('leave', {
-        'message' : data["userName"] + ' has left the chat.',
-        'socketID' : socketID,
-        'numOfUsers' : onlineUsers.length
-    })
+function onUserLeave(){
+    onlineUsers = []
+    serverIO.emit('signal')
 }
 
-function filterUsers(arr, value) { 
+function filterUser(arr, value) { 
     return arr.filter((u) => { 
         return u["userName"] != value["userName"]; 
     });
-}
-
-function logOutUser(user){
-    onlineUsers = filterUsers(onlineUsers, user)
 }
 

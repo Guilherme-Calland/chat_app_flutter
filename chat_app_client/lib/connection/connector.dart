@@ -50,11 +50,8 @@ class Connector {
       if (data["socketID"] == socket.id) {
         snack.display(data["message"], blue);
         if (data["validated"] == 'yes') {
+          sharedData.changeLoggedStatus(true);
           nav.popAndPush(ChatScreen.ROUTE_ID);
-        }
-      } else {
-        if (data["validated"] == 'yes') {
-          snack.display(data["announcement"], green);
         }
       }
 
@@ -67,13 +64,10 @@ class Connector {
       if (data["socketID"] == socket.id) {
         if (data["validated"] == 'yes') {
           sharedData.changeCurrentUserTheme(data["theme"]);
+          sharedData.changeLoggedStatus(true);
           nav.popAndPush(ChatScreen.ROUTE_ID);
         } else {
           snack.display(data["message"], blue);
-        }
-      } else {
-        if (data["validated"] == 'yes') {
-          snack.display(data["announcement"], green);
         }
       }
 
@@ -82,11 +76,17 @@ class Connector {
       }
     });
 
-    socket.on('leave', (data) {
-      if (data["socketID"] != socket.id) {
-        snack.display(data["message"], red);
+    socket.on('signal', (data){
+      if(sharedData.loggedIn){
+        var json = sharedData.currentUser.userToJson();
+        print(json);
+        socket.emit('signal', json);
       }
-      sharedData.updateNumOfUsers(data["numOfUsers"]);
+    });
+
+
+    socket.on('updatedListNum', (data) {
+      sharedData.updateNumOfUsers(data);
     });
   }
 
@@ -128,11 +128,12 @@ class Connector {
     }
   }
 
-  void leave() {
-    socket.emit('leave', sharedData.currentUser.userToJson());
-  }
-
   void updateUser(){
     socket.emit('updateUser', sharedData.currentUser.userToJson());
+  }
+
+  void leave() {
+    sharedData.changeLoggedStatus(false);
+    socket.emit('leave');
   }
 }
