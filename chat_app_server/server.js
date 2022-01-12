@@ -15,120 +15,124 @@ var messages = []
 var currentUser
 
 serverIO.on('connection', (socket) => {
-    console.log('Connected successfuly with client using socket', socket.id)
+    socket.emit('connected', serverData())
+    socket.on('message', (msg) => { onMessage(msg, socket)} )
+    socket.on('signUp', (user) => { signUp(user, socket.id)} )
+    socket.on('logIn', (user) => { logIn(user, socket.id)} )
+    socket.on('leave', (user) => { leaveServer(user, socket.id)} )
+})
 
-    socket.emit('connected', {
+function serverData(){
+    var data =
+    {
         "connectionMessage" : "Client connected successfully with server.",
         "socketStatus" : "connected",
         "serverMessages" : messages
-    })
+    }
+    return data
+}
 
-    socket.on('disconnect', () => {
-        console.log(socket.id, 'has disconnected from this server.')
-        logOutUser(currentUser)
-    })
+function onMessage(data, socket){
+    console.log(data)
+    messages.push(data)
+    socket.broadcast.emit('messageReceive', data)
+}
 
-    socket.on('message', (data) => {
-        console.log(data)
-        messages.push(data)
-        socket.broadcast.emit('messageReceive', data)
+function signUp(data, socketID){
+    var userName = data["userName"]
+    var validUser = true
+    var returnData;
+    registeredUsers.forEach((user) =>{
+        if(user["userName"] == userName){
+            validUser = false
+        }
     })
+    if(validUser){
+        returnData = 
+        {
+            "message" : ' Registration successful.',
+            'validated' : 'yes',
+            "announcement" : userName + ' has joined the chat.'
+        }
+        registeredUsers.push(data)
+        onlineUsers.push(data)
+    }else{
+        returnData =  
+        {
+            'message' : 'This user name is already taken.',
+            'validated' : 'no'
+        }
+    }
 
-    socket.on('signUp', (data) => {
-        currentUser = data
-        console.log(data)
-        var userName = data["userName"]
-        var validUser = true
-        var returnData;
-        registeredUsers.forEach((user) =>{
-            if(user["userName"] == userName){
-                validUser = false
-            }
-        })
-        if(validUser){
+    returnData["socketID"] = socketID
+    returnData["numOfUsers"] = onlineUsers.length
+    serverIO.emit('signUp', returnData)
+}
+
+function logIn(data, socketID){
+    currentUser = data
+    var userName = data["userName"]
+    var password = data["password"]
+    var validUser = false
+    var alreadyOnline = false
+    var returnData;
+
+    onlineUsers.forEach( (user)=> {
+        if(user["userName"] == userName){
+            alreadyOnline = true
             returnData = 
             {
-                "message" : ' Registration successful.',
-                'validated' : 'yes',
-                "announcement" : userName + ' has joined the chat.'
+                "validated" : "no",
+                "message" : userName + ' is already online.'
             }
-            registeredUsers.push(data)
-            onlineUsers.push(data)
-        }else{
-            returnData =  
+        }
+    })
+
+    if(!alreadyOnline){
+        registeredUsers.forEach( (user)=> {
+            if(user["userName"] == userName && user["password"] == password){
+                onlineUsers.push(user)
+                validUser = true
+                returnData = { 
+                    "validated" : "yes",
+                    "announcement" : userName + ' has joined the chat.',
+                    "theme" : user["theme"]
+                }                                        
+            }
+        })
+
+        if(!validUser){
+            returnData = 
             {
-                'message' : 'This user name is already taken.',
-                'validated' : 'no'
+                "validated" : "no",
+                "message" : "User name or password are incorrect."
             }
         }
+    }
 
-        returnData["socketID"] = socket.id
-        returnData["numOfUsers"] = onlineUsers.length
-        serverIO.emit('signUp', returnData)
+    returnData["socketID"] = socketID
+    returnData["numOfUsers"] = onlineUsers.length
+    serverIO.emit('logIn', returnData)
+}
+
+function leaveServer(data, socketID){
+    logOutUser(data)
+    serverIO.emit('leave', {
+        'message' : data["userName"] + ' has left the chat.',
+        'socketID' : socketID,
+        'numOfUsers' : onlineUsers.length
     })
-
-    socket.on('logIn', (data) => {
-        currentUser = data
-        console.log(data)
-        var userName = data["userName"]
-        var password = data["password"]
-        var validUser = false
-        var alreadyOnline = false
-        var returnData;
-
-        onlineUsers.forEach( (user)=> {
-            if(user["userName"] == userName){
-                alreadyOnline = true
-                returnData = 
-                {
-                    "validated" : "no",
-                    "message" : userName + ' is already online.'
-                }
-            }
-        })
-
-        if(!alreadyOnline){
-            registeredUsers.forEach( (user)=> {
-                if(user["userName"] == userName && user["password"] == password){
-                    onlineUsers.push(user)
-                    validUser = true
-                    returnData = { 
-                        "validated" : "yes",
-                        "announcement" : userName + ' has joined the chat.'
-                    }                                        
-                }
-            })
-
-            if(!validUser){
-                returnData = 
-                {
-                    "validated" : "no",
-                    "message" : "User name or password are incorrect."
-                }
-            }
-        }
-
-        returnData["socketID"] = socket.id
-        returnData["numOfUsers"] = onlineUsers.length
-        serverIO.emit('logIn', returnData)
-    })
-
-    socket.on('leave', (data) => {
-        logOutUser(data)
-        serverIO.emit('leave', {
-            'message' : data["userName"] + ' has left the chat.',
-            'socketID' : socket.id,
-            'numOfUsers' : onlineUsers.length
-        })
-    })
-})
+}
 
 function filterUsers(arr, value) { 
-    return arr.filter(function(u){ 
+    return arr.filter((u) => { 
         return u["userName"] != value["userName"]; 
     });
 }
 
 function logOutUser(user){
     onlineUsers = filterUsers(onlineUsers, user)
+    registeredUsers = filterUsers(registeredUsers, user)
+    registeredUsers.push(user) 
 }
+

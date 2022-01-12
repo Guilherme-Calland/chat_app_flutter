@@ -12,7 +12,8 @@ class User{
   Map userToJson(){
     Map json = {
       "userName" : userName,
-      "password" : password
+      "password" : password,
+      "theme" : theme
     };
     return json;
   }
