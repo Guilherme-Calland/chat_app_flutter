@@ -20,7 +20,10 @@ class ChatScreen extends StatelessWidget {
       builder: (_, data, __) {
         return Scaffold(
           appBar: AppBar(
-            backgroundColor: Color(0xff000000),
+            title: Text(
+              '${data.currentUser.userName}', style: TextStyle(fontSize: 24),),
+            centerTitle: true,
+            backgroundColor: data.currentUser.themeToColor(),
             leading: GestureDetector(
               onTap: () {
                 nav.pop();

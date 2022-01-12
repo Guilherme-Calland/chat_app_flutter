@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import '../model/message.dart';
 import '../model/user.dart';
+import '../resources/resources.dart';
 
 class ChatAppSharedData extends ChangeNotifier{
 
@@ -61,5 +62,4 @@ class ChatAppSharedData extends ChangeNotifier{
     currentUser = user;
     notifyListeners();
   }
-
 }

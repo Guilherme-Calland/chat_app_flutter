@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+Color pink = Color(0xffbf3c91);
+Color purple = Color(0xff76067b);
 Color red = Color(0xff953232);
 Color orange = Color(0xff9a590a);
 Color yellow = Color(0xff828126);
