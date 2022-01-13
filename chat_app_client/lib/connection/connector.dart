@@ -13,21 +13,22 @@ import '../shared/chat_app_shared_data.dart';
 
 class Connector {
   late IO.Socket socket;
-  late var sharedData;
+  var sharedData;
   late BuildContext buildContext;
   late SnackBarHelper snack;
   late NavigatorHelper nav;
+  late String ipAddress;
 
   Connector(this.buildContext) {
+    sharedData = Provider.of<ChatAppSharedData>(buildContext, listen: false);
     connectSocket();
     setUpSocketListener();
-    sharedData = Provider.of<ChatAppSharedData>(buildContext, listen: false);
     snack = SnackBarHelper(buildContext);
     nav = NavigatorHelper(buildContext);
   }
 
   void connectSocket() {
-    socket = IO.io('http://localhost:4000',
+    socket = IO.io('http://${sharedData.serverIP}:3000',
         IO.OptionBuilder().setTransports(['websocket']).build());
   }
 
@@ -48,7 +49,7 @@ class Connector {
 
     socket.on('signUp', (data) {
       if (data["socketID"] == socket.id) {
-        snack.display(data["message"], blue);
+        snack.display(data["message"], darkestBlue);
         if (data["validated"] == 'yes') {
           sharedData.changeLoggedStatus(true);
           nav.popAndPush(ChatScreen.ROUTE_ID);
@@ -135,5 +136,9 @@ class Connector {
   void leave() {
     sharedData.changeLoggedStatus(false);
     socket.emit('leave');
+  }
+
+  String retrieveServerIPFromDB() {
+    return '0';
   }
 }

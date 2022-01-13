@@ -25,99 +25,99 @@ class ChatScreen extends StatelessWidget {
     nav = NavigatorHelper(buildContext);
     return Consumer<ChatAppSharedData>(
       builder: (_, data, __) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(
-              '${data.currentUser.userName}',
-              style: TextStyle(fontSize: 24),
-            ),
-            centerTitle: true,
-            backgroundColor: themeToColor(data.currentUser.theme),
-            actions: [
-              UserThemeColorControl(
-                callback: () {
-                  focusNode.requestFocus();
+        return WillPopScope(
+          onWillPop: () async {
+            return false;
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text(
+                '${data.currentUser.userName}',
+                style: const TextStyle(fontSize: 24),
+              ),
+              centerTitle: true,
+              backgroundColor: themeToColor(data.currentUser.theme),
+              actions: [
+                UserThemeColorControl(
+                  callback: () {
+                    focusNode.requestFocus();
+                  },
+                ),
+              ],
+              leading: GestureDetector(
+                onTap: () {
+                  nav.pop();
+                  data.connector.leave();
                 },
-              ),
-            ],
-            leading: GestureDetector(
-              onTap: () {
-                nav.pop();
-                data.connector.leave();
-              },
-              child: Icon(
-                Icons.arrow_back,
-                color: white,
+                child: Icon(
+                  Icons.arrow_back,
+                  color: white,
+                ),
               ),
             ),
-          ),
-          body: data.isSocketConnected()
-              ? Container(
-                  padding: EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      Align(
-                        alignment: Alignment.center,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 8),
-                          child: Text(
-                            'Connected Users: ${data.numOfUsers}',
-                            style: TextStyle(fontSize: 16),
+            body: data.isSocketConnected()
+                ? Container(
+                    padding: const EdgeInsets.only(bottom: 8, top: 4, left: 16, right: 16),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Connected Users: ${data.numOfUsers}',
+                          style: TextStyle(fontSize: 16, color: white.withOpacity(0.7)),
+                        ),
+                        Expanded(
+                          child: ListView.builder(
+                            reverse: true,
+                            itemCount: data.messageList.length,
+                            itemBuilder: (context, index) {
+                              Message msg = data.messageList[index];
+                              String sender = msg.sender ?? '';
+                              String text = msg.text ?? '';
+                              bool sentByMe =
+                                  sender == data.currentUser.userName;
+                              String sendTime = msg.sendTime ?? '';
+                              Color color = themeToColor(msg.theme);
+                              return MessageItem(
+                                  text: text,
+                                  sentByMe: sentByMe,
+                                  sendTime: sendTime,
+                                  color: color,
+                                  sender: sender,
+                              );
+                            },
                           ),
                         ),
-                      ),
-                      Expanded(
-                        child: ListView.builder(
-                          reverse: true,
-                          itemCount: data.messageList.length,
-                          itemBuilder: (context, index) {
-                            Message msg = data.messageList[index];
-                            String sender = msg.sender ?? '';
-                            String text = msg.text ?? '';
-                            bool sentByMe =
-                                sender == data.currentUser.userName;
-                            String sendTime = msg.sendTime ?? '';
-                            Color color = themeToColor(msg.theme);
-                            return MessageItem(
-                                text: text,
-                                sentByMe: sentByMe,
-                                sendTime: sendTime,
-                                color: color,
-                                sender: sender,
-                            );
-                          },
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 8),
-                        child: TextField(
-                          focusNode: focusNode,
-                          textInputAction: TextInputAction.none,
-                          onSubmitted: (text) => sendMessage(text, data),
-                          autofocus: true,
-                          style: TextStyle(color: white),
-                          cursorColor: blue,
-                          controller: msgInputController,
-                          decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: white),
-                                borderRadius: BorderRadius.circular(10)),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: white),
-                                borderRadius: BorderRadius.circular(10)),
-                            suffixIcon: Container(
-                              margin: EdgeInsets.only(right: 10),
-                              child: CustomArrowButton(
-                                  onPressed: () => sendMessage(
-                                      msgInputController.text, data)),
+                        Container(
+                          margin: const EdgeInsets.only(top: 8),
+                          child: TextField(
+                            focusNode: focusNode,
+                            textInputAction: TextInputAction.none,
+                            onSubmitted: (text) => sendMessage(text, data),
+                            autofocus: true,
+                            style: TextStyle(color: white),
+                            cursorColor: blue,
+                            controller: msgInputController,
+                            decoration: InputDecoration(
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: white),
+                                  borderRadius: BorderRadius.circular(10)),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: white),
+                                  borderRadius: BorderRadius.circular(10)),
+                              suffixIcon: Container(
+                                margin: const EdgeInsets.only(right: 10),
+                                child: CustomArrowButton(
+                                    onPressed: () => sendMessage(
+                                        msgInputController.text, data)),
+                              ),
                             ),
                           ),
-                        ),
-                      )
-                    ],
-                  ),
-                )
-              : DisconnectedMessage(),
+                        )
+                      ],
+                    ),
+                  )
+                : DisconnectedMessage(),
+          ),
         );
       },
     );

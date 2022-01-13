@@ -1,3 +1,4 @@
+import 'package:chat_app_client/misc/utils.dart';
 import 'package:chat_app_client/resources/resources.dart';
 import 'package:chat_app_client/screens/registration_screen.dart';
 import 'package:chat_app_client/widgets/disconnected_message.dart';
@@ -20,7 +21,7 @@ class HomeScreen extends StatelessWidget {
     nav = NavigatorHelper(buildContext);
 
     return Consumer<ChatAppSharedData>(
-      builder: (_, data, __) {
+      builder: (buildContext, data, __) {
         return Scaffold(
           body: data.isSocketConnected()
               ? Center(
@@ -31,14 +32,17 @@ class HomeScreen extends StatelessWidget {
                   totalRepeatCount: 1,
                   animatedTexts: [
                     TyperAnimatedText('',
-                      speed: Duration(milliseconds: 100),
+                      speed: const Duration(milliseconds: 100),
+                      textStyle: TextStyle(
+                        fontSize: screenWidth(buildContext)*0.13
+                      )
                     ),
                     TyperAnimatedText(
                       'Cool Chat',
-                      speed: Duration(milliseconds: 200),
+                      speed: const Duration(milliseconds: 200),
                       textStyle: TextStyle(
                           color: white,
-                          fontSize: 56,
+                          fontSize: screenWidth(buildContext)*0.13,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 2,
                           wordSpacing: 4),
@@ -46,7 +50,7 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(
-                  height: 32,
+                  height: 8,
                 ),
                 Row(
                   mainAxisSize: MainAxisSize.min,

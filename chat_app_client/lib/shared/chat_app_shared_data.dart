@@ -14,6 +14,7 @@ class ChatAppSharedData extends ChangeNotifier{
   late Connector connector;
   late User currentUser;
   bool colorOptionsEnabled = false;
+  String serverIP = '';
 
   void initializeConnector(BuildContext buildContext){
     connector = Connector(buildContext);
@@ -77,8 +78,13 @@ class ChatAppSharedData extends ChangeNotifier{
   }
 
   void changeLoggedStatus(bool b){
-     loggedIn = b;
-     notifyListeners();
+    loggedIn = b;
+    notifyListeners();
+  }
+
+  void passServerIP(String address){
+    serverIP = address;
+    notifyListeners();
   }
 
 }

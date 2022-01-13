@@ -32,7 +32,8 @@ class RegistrationScreen extends StatelessWidget {
       builder: (_, data, __) {
         return Scaffold(
           appBar: AppBar(
-            backgroundColor: const Color(0xff000000),
+            elevation: 0,
+            backgroundColor: Colors.transparent,
             leading: GestureDetector(
               onTap: () {
                 nav.pop();

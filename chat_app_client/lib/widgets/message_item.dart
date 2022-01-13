@@ -37,7 +37,7 @@ class MessageItem extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                margin: const EdgeInsets.only(top: 2, bottom: 12, left: 10, right: 10),
+                margin: const EdgeInsets.only(top: 2, bottom: 8, left: 10, right: 10),
                 padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
