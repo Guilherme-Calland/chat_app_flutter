@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-
 import '../model/message.dart';
 import '../model/user.dart';
 import '../resources/resources.dart';
@@ -13,23 +12,29 @@ import '../shared/chat_app_shared_data.dart';
 
 class Connector {
   late IO.Socket socket;
-  var sharedData;
+  late ChatAppSharedData sharedData;
   late BuildContext buildContext;
   late SnackBarHelper snack;
   late NavigatorHelper nav;
-  late String ipAddress;
 
   Connector(this.buildContext) {
     sharedData = Provider.of<ChatAppSharedData>(buildContext, listen: false);
-    connectSocket();
-    setUpSocketListener();
+    connectSocket('localhost');
     snack = SnackBarHelper(buildContext);
     nav = NavigatorHelper(buildContext);
   }
 
-  void connectSocket() {
-    socket = IO.io('http://${sharedData.serverIP}:3000',
-        IO.OptionBuilder().setTransports(['websocket']).build());
+  void connectSocket(String address) {
+    socket = IO.io('http://$address:3000',
+        IO.OptionBuilder()
+        .setTransports(['websocket'])
+        .disableMultiplex()
+        .build());
+    setUpSocketListener();
+  }
+
+  void reconnectSocket(String address) {
+    connectSocket(address);
   }
 
   void setUpSocketListener() {

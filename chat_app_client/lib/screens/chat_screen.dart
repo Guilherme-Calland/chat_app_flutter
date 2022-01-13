@@ -116,7 +116,7 @@ class ChatScreen extends StatelessWidget {
                       ],
                     ),
                   )
-                : DisconnectedMessage(),
+                : DisconnectedMessage(data),
           ),
         );
       },

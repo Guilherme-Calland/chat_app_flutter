@@ -74,7 +74,7 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
           )
-              : DisconnectedMessage(),
+              : DisconnectedMessage(data),
         );
       },
     );

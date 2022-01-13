@@ -157,7 +157,7 @@ class RegistrationScreen extends StatelessWidget {
                     ),
                   ),
                 )
-              : DisconnectedMessage(),
+              : DisconnectedMessage(data),
         );
       },
     );

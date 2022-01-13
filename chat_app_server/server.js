@@ -4,7 +4,7 @@ const app = express()
 const PORT = process.env.PORT || 3000
 
 const server = app.listen(PORT, () => {
-    console.log('Server is listening on port', PORT)
+    console.log('Server is listening.')
 })
 
 const serverIO = require('socket.io')(server)
@@ -14,8 +14,9 @@ var registeredUsers = []
 var messages = []
 
 serverIO.on('connection', (socket) => {
+    console.log('Server connected successfully with a new client.')
     serverIO.emit('connected', sendServerData())
-    socket.on('disconnect', () => { onUserLeave() } )
+    socket.on('disconnect', () => { onUserDisconnect() } )
     socket.on('signal', (data) => { updateOnlineUsers(data) })
     socket.on('message', (msg) => { onMessage(msg, socket)} )
     socket.on('signUp', (data) => { signUp(data, socket.id)} )
@@ -130,6 +131,12 @@ function logIn(data, socketID){
 }
 
 function onUserLeave(){
+    onlineUsers = []
+    serverIO.emit('signal')
+}
+
+function onUserDisconnect(){
+    console.log('A client has disconnected from server.')
     onlineUsers = []
     serverIO.emit('signal')
 }
