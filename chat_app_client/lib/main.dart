@@ -1,6 +1,7 @@
 import 'package:chat_app_client/resources/resources.dart';
 import 'package:chat_app_client/shared/chat_app_shared_data.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'navigation/routes.dart';
@@ -14,13 +15,13 @@ class ChatApp extends StatelessWidget {
       create: (context) => ChatAppSharedData(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Socket Chat App',
+        title: 'Cool Chat',
         theme: ThemeData(
-          primaryColor: Colors.blue,
+          primaryColor: white,
           scaffoldBackgroundColor: black,
           textTheme: TextTheme(
-            bodyText2: TextStyle(
-              color: white,
+            bodyText2: GoogleFonts.varelaRound(
+                color: white
             ),
           ),
         ),

@@ -9,9 +9,9 @@ class DisconnectedMessage extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.warning, color: Colors.white, size: 32, ),
+            Icon(Icons.warning, color: Colors.white, size: 48, ),
             SizedBox(height: 16,),
-            Text('No connection to Server.', style: TextStyle(fontSize: 32),textAlign: TextAlign.center,),
+            Text('No connection to Server.', style: TextStyle(fontSize: 24),textAlign: TextAlign.center,),
           ],
         ),
       ),
