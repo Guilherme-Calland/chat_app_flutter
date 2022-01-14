@@ -33,7 +33,13 @@ class DisconnectedMessage extends StatelessWidget {
             height: 32,
           ),
           Text(
-            'Copy your local server IP address here.',
+            'Waiting for server connection.',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 12, color: white.withOpacity(0.7)),
+          ),
+          Text(
+            'Look for a new server by \ntyping an IP address here:',
+            textAlign: TextAlign.center,
             style: TextStyle(fontSize: 12, color: white.withOpacity(0.7)),
           ),
           const SizedBox(
@@ -60,7 +66,7 @@ class DisconnectedMessage extends StatelessWidget {
           ),
           CustomButton(
             onPressed: () => submitIPAddress(txtEditController.text),
-            text: 'Ok',
+            text: 'Send',
             color: white.withOpacity(0.2),
             padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
             wrapContent: true,

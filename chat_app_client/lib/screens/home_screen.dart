@@ -36,7 +36,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     TyperAnimatedText(
                       'Cool Chat',
-                      speed: const Duration(milliseconds: 150),
+                      speed: const Duration(milliseconds: 200),
                       textStyle: TextStyle(
                           color: white,
                           fontSize: screenWidth(buildContext)*0.13,
