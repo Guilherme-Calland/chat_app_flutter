@@ -1,4 +1,5 @@
 import 'package:chat_app_client/connection/connector.dart';
+import 'package:chat_app_client/misc/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import '../model/message.dart';
@@ -14,6 +15,7 @@ class ChatAppSharedData extends ChangeNotifier{
   late Connector connector;
   late User currentUser;
   bool colorOptionsEnabled = false;
+  bool waitingInitialConnection = false;
 
   void initializeConnector(BuildContext buildContext){
     connector = Connector(buildContext);

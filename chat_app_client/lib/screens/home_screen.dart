@@ -11,17 +11,14 @@ import '../widgets/custom_button.dart';
 
 class HomeScreen extends StatelessWidget {
   static const String ROUTE_ID = 'home_screen';
-  late var sharedData;
   late NavigatorHelper nav;
 
   @override
   Widget build(BuildContext buildContext) {
-    sharedData = Provider.of<ChatAppSharedData>(buildContext, listen: false);
-    sharedData.initializeConnector(buildContext);
     nav = NavigatorHelper(buildContext);
-
     return Consumer<ChatAppSharedData>(
       builder: (buildContext, data, __) {
+        data.initializeConnector(buildContext);
         return Scaffold(
           body: data.isSocketConnected()
               ? Center(
@@ -39,7 +36,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     TyperAnimatedText(
                       'Cool Chat',
-                      speed: const Duration(milliseconds: 200),
+                      speed: const Duration(milliseconds: 150),
                       textStyle: TextStyle(
                           color: white,
                           fontSize: screenWidth(buildContext)*0.13,

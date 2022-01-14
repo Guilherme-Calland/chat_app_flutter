@@ -4,6 +4,7 @@ import 'package:chat_app_client/screens/chat_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import '../model/message.dart';
 import '../model/user.dart';
@@ -13,18 +14,21 @@ import '../shared/chat_app_shared_data.dart';
 class Connector {
   late IO.Socket socket;
   late ChatAppSharedData sharedData;
+  late SharedPreferences storedData;
   late BuildContext buildContext;
   late SnackBarHelper snack;
   late NavigatorHelper nav;
+  late String serverIP;
 
-  Connector(this.buildContext) {
+  Connector(this.buildContext){
     sharedData = Provider.of<ChatAppSharedData>(buildContext, listen: false);
-    connectSocket('localhost');
+    retrieveServerIPFromDB();
     snack = SnackBarHelper(buildContext);
     nav = NavigatorHelper(buildContext);
   }
 
   void connectSocket(String address) {
+    storedData.setString('serverIP', address);
     socket = IO.io('http://$address:3000',
         IO.OptionBuilder()
         .setTransports(['websocket'])
@@ -85,7 +89,6 @@ class Connector {
     socket.on('signal', (data){
       if(sharedData.loggedIn){
         var json = sharedData.currentUser.userToJson();
-        print(json);
         socket.emit('signal', json);
       }
     });
@@ -143,7 +146,9 @@ class Connector {
     socket.emit('leave');
   }
 
-  String retrieveServerIPFromDB() {
-    return '0';
+  Future<void> retrieveServerIPFromDB() async {
+    storedData = await SharedPreferences.getInstance();
+    serverIP = storedData.getString('serverIP') ?? 'localhost';
+    connectSocket(serverIP);
   }
 }

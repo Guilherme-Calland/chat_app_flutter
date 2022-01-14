@@ -63,7 +63,7 @@ class ChatScreen extends StatelessWidget {
                       children: [
                         Text(
                           'Connected Users: ${data.numOfUsers}',
-                          style: TextStyle(fontSize: 16, color: white.withOpacity(0.7)),
+                          style: TextStyle(fontSize: 16, color: white),
                         ),
                         Expanded(
                           child: ListView.builder(
@@ -90,6 +90,7 @@ class ChatScreen extends StatelessWidget {
                         Container(
                           margin: const EdgeInsets.only(top: 8),
                           child: TextField(
+                            keyboardType: TextInputType.visiblePassword,
                             focusNode: focusNode,
                             textInputAction: TextInputAction.none,
                             onSubmitted: (text) => sendMessage(text, data),
