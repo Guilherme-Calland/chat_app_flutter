@@ -31,6 +31,7 @@ class Connector {
         IO.OptionBuilder()
         .setTransports(['websocket'])
         .build());
+    socket.connect();
     setUpSocketListener();
   }
 
@@ -94,6 +95,7 @@ class Connector {
   void signUp(User user) {
     if (disconnectedFromServer()) {
       sharedData.changeSocketStatus('disconnected');
+      nav.popToHome();
     } else {
       var jsonData = user.userToJson();
       socket.emit("signUp", jsonData);
@@ -103,6 +105,8 @@ class Connector {
   void logIn(User user) {
     if (disconnectedFromServer()) {
       sharedData.changeSocketStatus('disconnected');
+      nav.popToHome();
+      leave();
     } else {
       var jsonData = user.userToJson();
       socket.emit("logIn", jsonData);
@@ -115,6 +119,7 @@ class Connector {
     if (text.isNotEmpty) {
       if (disconnectedFromServer()) {
         sharedData.changeSocketStatus('disconnected');
+        nav.popToHome();
       } else {
         String sendTime = new DateTime.now().toString().substring(11, 16);
         var messageJson = {
@@ -136,5 +141,10 @@ class Connector {
   void leave() {
     sharedData.changeLoggedStatus(false);
     socket.emit('leave');
+  }
+
+  void reconnect(String address){
+    socket.dispose();
+    connectSocket(address);
   }
 }

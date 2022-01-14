@@ -45,8 +45,7 @@ class RegistrationScreen extends StatelessWidget {
               ),
             ),
           ),
-          body: data.socketStatus == 'connected'
-              ? Center(
+          body: Center(
                   child: SingleChildScrollView(
                     child: Container(
                       padding:
@@ -158,7 +157,6 @@ class RegistrationScreen extends StatelessWidget {
                     ),
                   ),
                 )
-              : DisconnectedMessage(data),
         );
       },
     );

@@ -18,8 +18,8 @@ class HomeScreen extends StatelessWidget {
 
   HomeScreen(BuildContext buildContext){
     sharedData = Provider.of<ChatAppSharedData>(buildContext, listen: false);
-    waitForConnection(buildContext);
-    sharedData.initializeConnector(buildContext);
+    sleepForConnection(buildContext);
+    sharedData.initializeConnection(buildContext);
     nav = NavigatorHelper(buildContext);
   }
 
@@ -79,16 +79,16 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
           )
-              : DisconnectedMessage(data),
+              : DisconnectedMessage(buildContext, data),
         );
       },
     );
   }
 
-  void waitForConnection(BuildContext buildContext) async {
+  void sleepForConnection(BuildContext buildContext) async {
     await sleep(seconds: 4);
     var sharedData = Provider.of<ChatAppSharedData>(buildContext, listen: false);
-    sharedData.onWaitedInitConnection();
+    sharedData.onDoneSleep();
   }
 
 }

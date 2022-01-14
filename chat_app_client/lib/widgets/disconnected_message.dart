@@ -5,12 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../misc/utils.dart';
+import '../navigation/navigation_helper.dart';
 import '../resources/resources.dart';
 
 class DisconnectedMessage extends StatelessWidget {
   final txtEditController = TextEditingController();
   final ChatAppSharedData sharedData;
-  DisconnectedMessage(this.sharedData);
+  final BuildContext buildContext;
+  late NavigatorHelper nav;
+  DisconnectedMessage(this.buildContext, this.sharedData);
 
   @override
   Widget build(BuildContext buildContext) {
@@ -37,10 +40,13 @@ class DisconnectedMessage extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 12, color: white.withOpacity(0.7)),
           ),
-          Text(
-            'Look for a new server by \ntyping an IP address here:',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 12, color: white.withOpacity(0.7)),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              'Look for a new server by typing an IP address here.',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 12, color: white.withOpacity(0.7)),
+            ),
           ),
           const SizedBox(
             height: 4,
@@ -54,7 +60,7 @@ class DisconnectedMessage extends StatelessWidget {
               controller: txtEditController,
               textAlign: TextAlign.center,
               textInputAction: TextInputAction.none,
-              onSubmitted: (text) => submitIPAddress(text),
+              onSubmitted: (text) => submitIPAndReconnect(text),
               keyboardType: TextInputType.visiblePassword,
               decoration: const InputDecoration(
                 border: InputBorder.none,
@@ -65,7 +71,7 @@ class DisconnectedMessage extends StatelessWidget {
             height: 4,
           ),
           CustomButton(
-            onPressed: () => submitIPAddress(txtEditController.text),
+            onPressed: () => submitIPAndReconnect(txtEditController.text),
             text: 'Send',
             color: white.withOpacity(0.2),
             padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
@@ -76,8 +82,8 @@ class DisconnectedMessage extends StatelessWidget {
     );
   }
 
-  void submitIPAddress(text){
-    sharedData.passServerIP(text);
+  void submitIPAndReconnect(text){
+    sharedData.connectNewSocket(text);
     txtEditController.clear();
   }
 }

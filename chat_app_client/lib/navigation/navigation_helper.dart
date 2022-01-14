@@ -1,3 +1,4 @@
+import 'package:chat_app_client/screens/home_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +16,10 @@ class NavigatorHelper{
 
   void pop(){
     Navigator.pop(buildContext);
+  }
+
+  void popToHome(){
+    Navigator.of(buildContext).popUntil(ModalRoute.withName(HomeScreen.ROUTE_ID));
   }
 }
 

@@ -72,15 +72,19 @@ class ChatAppSharedData extends ChangeNotifier{
   void passServerIP(String address) {
   }
 
-  void onWaitedInitConnection(){
+  void onDoneSleep(){
     waitingInitialConnection = false;
     notifyListeners();
   }
 
-  void initializeConnector(BuildContext buildContext) async{
+  void initializeConnection(BuildContext buildContext) async{
     storedData = await SharedPreferences.getInstance();
     var serverIP = storedData.getString('serverIP') ?? 'localhost';
-    storedData.setString('serverIP', serverIP);
     connector = Connector(buildContext, serverIP);
+  }
+
+  void connectNewSocket(String address){
+    storedData.setString('serverIP', address);
+    connector.reconnect(address);
   }
 }
