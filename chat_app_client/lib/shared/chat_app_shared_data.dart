@@ -1,6 +1,7 @@
 import 'package:chat_app_client/connection/connector.dart';
 import 'package:chat_app_client/misc/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import '../model/message.dart';
 import '../model/user.dart';
@@ -12,14 +13,11 @@ class ChatAppSharedData extends ChangeNotifier{
   String socketStatus = "disconnected";
   bool loggedIn = false;
   int numOfUsers = 0;
-  late Connector connector;
   late User currentUser;
   bool colorOptionsEnabled = false;
-  bool waitingInitialConnection = false;
-
-  void initializeConnector(BuildContext buildContext){
-    connector = Connector(buildContext);
-  }
+  bool waitingInitialConnection = true;
+  late Connector connector;
+  late SharedPreferences storedData;
 
   void retreiveMessages(List<dynamic> data){
     List<Message> tempList = [];
@@ -50,14 +48,6 @@ class ChatAppSharedData extends ChangeNotifier{
     notifyListeners();
   }
 
-  void signUp(User user){
-    connector.signUp(user);
-  }
-
-  void logIn(User user){
-    connector.logIn(user);
-  }
-
   void changeCurrentUser(User user){
     currentUser = user;
     notifyListeners();
@@ -79,8 +69,18 @@ class ChatAppSharedData extends ChangeNotifier{
     notifyListeners();
   }
 
-  void passServerIP(String address){
-    connector.reconnectSocket(address);
+  void passServerIP(String address) {
   }
 
+  void onWaitedInitConnection(){
+    waitingInitialConnection = false;
+    notifyListeners();
+  }
+
+  void initializeConnector(BuildContext buildContext) async{
+    storedData = await SharedPreferences.getInstance();
+    var serverIP = storedData.getString('serverIP') ?? 'localhost';
+    storedData.setString('serverIP', serverIP);
+    connector = Connector(buildContext, serverIP);
+  }
 }

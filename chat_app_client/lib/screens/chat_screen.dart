@@ -12,17 +12,22 @@ import '../resources/resources.dart';
 import '../widgets/custom_arrow_button.dart';
 import '../widgets/disconnected_message.dart';
 import '../widgets/message_item.dart';
-import '../widgets/user_theme_collor_control.dart';
+import '../widgets/user_theme_color_control.dart';
 
 class ChatScreen extends StatelessWidget {
   static const ROUTE_ID = 'chat_screen';
   var msgInputController = TextEditingController();
   late NavigatorHelper nav;
   var focusNode = FocusNode();
+  late ChatAppSharedData sharedData;
+
+  ChatScreen(BuildContext buildContext){
+    sharedData = Provider.of<ChatAppSharedData>(buildContext, listen: false);
+    nav = NavigatorHelper(buildContext);
+  }
 
   @override
   Widget build(BuildContext buildContext) {
-    nav = NavigatorHelper(buildContext);
     return Consumer<ChatAppSharedData>(
       builder: (_, data, __) {
         return WillPopScope(
@@ -47,7 +52,7 @@ class ChatScreen extends StatelessWidget {
               leading: GestureDetector(
                 onTap: () {
                   nav.pop();
-                  data.connector.leave();
+                  sharedData.connector.leave();
                 },
                 child: Icon(
                   Icons.arrow_back,
@@ -93,7 +98,7 @@ class ChatScreen extends StatelessWidget {
                             keyboardType: TextInputType.visiblePassword,
                             focusNode: focusNode,
                             textInputAction: TextInputAction.none,
-                            onSubmitted: (text) => sendMessage(text, data),
+                            onSubmitted: (text) => sendMessage(text),
                             autofocus: true,
                             style: TextStyle(color: white),
                             cursorColor: blue,
@@ -109,7 +114,7 @@ class ChatScreen extends StatelessWidget {
                                 margin: const EdgeInsets.only(right: 10),
                                 child: CustomArrowButton(
                                     onPressed: () => sendMessage(
-                                        msgInputController.text, data)),
+                                        msgInputController.text)),
                               ),
                             ),
                           ),
@@ -124,7 +129,7 @@ class ChatScreen extends StatelessWidget {
     );
   }
 
-  void sendMessage(String text, ChatAppSharedData sharedData) {
+  void sendMessage(String text) {
     User user = sharedData.currentUser;
     sharedData.connector.sendMessage(text, user);
     msgInputController.clear();

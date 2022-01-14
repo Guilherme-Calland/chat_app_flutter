@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.guilhermecallandprojects.chat_app_client">
+    <uses-permission android:name="android.permission.INTERNET"/>
    <application
         android:label="Cool Chat"
         android:name="${applicationName}"

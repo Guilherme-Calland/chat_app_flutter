@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import '../connection/connector.dart';
 import '../misc/utils.dart';
 import '../model/user.dart';
 import '../navigation/navigation_helper.dart';
@@ -22,12 +23,12 @@ class RegistrationScreen extends StatelessWidget {
   var userNameTxtController = TextEditingController();
   var passwordTxtController = TextEditingController();
 
-  RegistrationScreen(this.signUpOrLogIn);
+  RegistrationScreen(this.signUpOrLogIn, buildContext){
+    nav = NavigatorHelper(buildContext);
+  }
 
   @override
-  Widget build(BuildContext buildContext) {
-    nav = NavigatorHelper(buildContext);
-
+  Widget build(BuildContext buildContext,) {
     return Consumer<ChatAppSharedData>(
       builder: (_, data, __) {
         return Scaffold(
@@ -167,8 +168,8 @@ class RegistrationScreen extends StatelessWidget {
     if (userName.isNotEmpty && password.isNotEmpty) {
       User user = User(userName, password);
       signUpOrLogIn == 'Sign Up'
-          ? data.signUp(user)
-          : data.logIn(user);
+          ? signUp(user, data)
+          : logIn(user, data);
       data.changeCurrentUser(user);
       userNameNode.requestFocus();
       userNameTxtController.clear();
@@ -186,5 +187,13 @@ class RegistrationScreen extends StatelessWidget {
 
   void goToNextField() {
     passwordNode.requestFocus();
+  }
+
+  void signUp(User user, ChatAppSharedData data){
+    data.connector.signUp(user);
+  }
+
+  void logIn(User user, ChatAppSharedData data){
+    data.connector.logIn(user);
   }
 }

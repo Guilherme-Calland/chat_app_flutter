@@ -5,10 +5,10 @@ import '../screens/registration_screen.dart';
 class Routes{
   static routes() {
     return {
-      HomeScreen.ROUTE_ID: (buildContext) => HomeScreen(),
-      RegistrationScreen.SIGN_UP_ROUTE_ID: (buildContext) => RegistrationScreen('Sign Up'),
-      RegistrationScreen.LOG_IN_ROUTE_ID: (buildContext) => RegistrationScreen('Log in'),
-      ChatScreen.ROUTE_ID: (buildContext) => ChatScreen()
+      HomeScreen.ROUTE_ID: (buildContext) => HomeScreen(buildContext),
+      RegistrationScreen.SIGN_UP_ROUTE_ID: (buildContext) => RegistrationScreen('Sign Up', buildContext),
+      RegistrationScreen.LOG_IN_ROUTE_ID: (buildContext) => RegistrationScreen('Log in', buildContext),
+      ChatScreen.ROUTE_ID: (buildContext) => ChatScreen(buildContext)
     };
   }
 

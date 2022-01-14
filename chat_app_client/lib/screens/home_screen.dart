@@ -5,6 +5,8 @@ import 'package:chat_app_client/widgets/disconnected_message.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../connection/connector.dart';
 import '../navigation/navigation_helper.dart';
 import '../shared/chat_app_shared_data.dart';
 import '../widgets/custom_button.dart';
@@ -12,15 +14,21 @@ import '../widgets/custom_button.dart';
 class HomeScreen extends StatelessWidget {
   static const String ROUTE_ID = 'home_screen';
   late NavigatorHelper nav;
+  late ChatAppSharedData sharedData;
+
+  HomeScreen(BuildContext buildContext){
+    sharedData = Provider.of<ChatAppSharedData>(buildContext, listen: false);
+    waitForConnection(buildContext);
+    sharedData.initializeConnector(buildContext);
+    nav = NavigatorHelper(buildContext);
+  }
 
   @override
   Widget build(BuildContext buildContext) {
-    nav = NavigatorHelper(buildContext);
     return Consumer<ChatAppSharedData>(
       builder: (buildContext, data, __) {
-        data.initializeConnector(buildContext);
         return Scaffold(
-          body: data.socketStatus == 'connected'
+          body: data.socketStatus == 'connected'|| data.waitingInitialConnection
               ? Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -76,4 +84,11 @@ class HomeScreen extends StatelessWidget {
       },
     );
   }
+
+  void waitForConnection(BuildContext buildContext) async {
+    await sleep(seconds: 4);
+    var sharedData = Provider.of<ChatAppSharedData>(buildContext, listen: false);
+    sharedData.onWaitedInitConnection();
+  }
+
 }
