@@ -20,7 +20,7 @@ class HomeScreen extends StatelessWidget {
       builder: (buildContext, data, __) {
         data.initializeConnector(buildContext);
         return Scaffold(
-          body: data.isSocketConnected()
+          body: data.socketStatus == 'connected'
               ? Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,

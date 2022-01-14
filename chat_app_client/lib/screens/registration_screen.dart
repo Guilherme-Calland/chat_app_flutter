@@ -44,7 +44,7 @@ class RegistrationScreen extends StatelessWidget {
               ),
             ),
           ),
-          body: data.isSocketConnected()
+          body: data.socketStatus == 'connected'
               ? Center(
                   child: SingleChildScrollView(
                     child: Container(

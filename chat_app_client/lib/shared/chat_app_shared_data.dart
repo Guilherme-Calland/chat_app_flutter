@@ -30,10 +30,6 @@ class ChatAppSharedData extends ChangeNotifier{
     notifyListeners();
   }
 
-  bool isSocketConnected(){
-    return socketStatus == "connected";
-  }
-
   void addMessage(Message message){
     messageList.insert(0, message);
     notifyListeners();

@@ -55,7 +55,7 @@ class ChatScreen extends StatelessWidget {
                 ),
               ),
             ),
-            body: data.isSocketConnected()
+            body: data.socketStatus == 'connected'
                 ? Container(
                     padding: const EdgeInsets.only(bottom: 8, top: 4, left: 16, right: 16),
                     child: Column(
