@@ -9,38 +9,21 @@ const server = app.listen(PORT, () => {
 
 const serverIO = require('socket.io')(server)
 
-var onlineUsers = []
-var registeredUsers = []
-var messages = []
+const onlineUsers = new Map()
+const registeredUsers = new Map()
+const messages = []
 
 serverIO.on('connection', (socket) => {
     console.log('Server connected successfully with a new client.')
-    socket.emit('connected', sendServerData())
-    socket.on('disconnect', () => { onUserDisconnect() } )
-    socket.on('signal', (data) => { updateOnlineUsers(data) })
-    socket.on('message', (msg) => { onMessage(msg, socket)} )
-    socket.on('signUp', (data) => { signUp(data, socket.id)} )
-    socket.on('logIn', (data) => { logIn(data, socket.id)} )
-    socket.on('updateUser', (data) => { updateUser(data) } )
-    socket.on('leave', () => { onUserLeave() })
-
-    socket.on('test', (inData) => {
-        socket.emit('test', "test")
-    })
+    socket.emit('connected', serverData())
+    socket.on('disconnect', () => { onUserLeave(socket, "disconnected") } )
+    socket.on('leave', () => { onUserLeave(socket, "left") })
+    socket.on('message', (msg) => { onMessage(msg)} )
+    socket.on('signUp', (data) => { signUp(data, socket)} )
+    socket.on('logIn', (data) => { logIn(data, socket)} )
 })
 
-function updateOnlineUsers(user){
-    onlineUsers.push(user)
-    serverIO.emit('updatedListNum', onlineUsers.length)
-    console.log(onlineUsers)
-}
-
-function updateUser(user){
-    registeredUsers = filterUser(registeredUsers, user)
-    registeredUsers.push(user) 
-}
-
-function sendServerData(){
+function serverData(){
     var data =
     {
         "connectionMessage" : "Client connected successfully with server.",
@@ -50,104 +33,114 @@ function sendServerData(){
     return data
 }
 
-function onMessage(data, socket){
+function onMessage(data){
     console.log(data)
     messages.push(data)
-    socket.broadcast.emit('messageReceive', data)
+    //broadcasts a message to everyone
+    serverIO.sockets.emit('messageReceive', data)
 }
 
-function signUp(data, socketID){
+function signUp(data, socket){
     var userName = data["userName"]
-    var validUser = true
     var returnData;
-    registeredUsers.forEach((user) =>{
-        if(user["userName"] == userName){
-            validUser = false
-        }
-    })
-    if(validUser){
-        returnData = 
-        {
-            "message" : ' Registration successful.',
-            'validated' : 'yes',
-        }
-        currentUser = data
-        registeredUsers.push(data)
-        onlineUsers.push(data)
-    }else{
+
+    if(registeredUsers[userName]){
         returnData =  
         {
             'message' : 'This user name is already taken.',
             'validated' : 'no'
         }
+    }else{
+        returnData = 
+        {
+            "message" : "Registration successful.",
+            "validated" : "yes",
+        }
+        registeredUsers[userName] = data
+        onlineUsers[socket.id] = data 
+        onUserEntered(socket, userName)
     }
-
-    returnData["socketID"] = socketID
-    returnData["numOfUsers"] = onlineUsers.length
-    serverIO.emit('signUp', returnData)
+    socket.emit('signUp', returnData)
     console.log(onlineUsers)
 }
 
-function logIn(data, socketID){
+function logIn(data, socket){
     var userName = data["userName"]
     var password = data["password"]
-    var validUser = false
-    var alreadyOnline = false
     var returnData;
+    var validUser = false
 
-    onlineUsers.forEach( (user)=> {
-        if(user["userName"] == userName){
-            alreadyOnline = true
-            returnData = 
+    if(onlineUsers[socket.id]){
+        returnData = 
             {
                 "validated" : "no",
                 "message" : userName + ' is already online.'
             }
-        }
-    })
-
-    if(!alreadyOnline){
-        registeredUsers.forEach( (user)=> {
-            if(user["userName"] == userName && user["password"] == password){
-                onlineUsers.push(user)
-                currentUser = data
+    }else{
+        if(registeredUsers[userName]){
+            var user = registeredUsers[userName]
+            if(password == user["password"]){
                 validUser = true
-                returnData = { 
-                    "validated" : "yes",
-                    "theme" : user["theme"]
-                }                                        
-            }
-        })
-
-        if(!validUser){
-            returnData = 
-            {
-                "validated" : "no",
-                "message" : "User name or password are incorrect."
             }
         }
     }
 
-    returnData["socketID"] = socketID
-    returnData["numOfUsers"] = onlineUsers.length
-    serverIO.emit('logIn', returnData)
+    if(validUser){
+        returnData = {
+            "validated" : "yes"
+        }
+        onlineUsers[socket.id] = data 
+        onUserEntered(socket, userName)
+    } else {
+        returnData = {
+            "validated" : "no",
+            "message" : "User name or password are incorrect."
+        }
+    }
+    socket.emit('logIn', returnData)
     console.log(onlineUsers)
 }
 
-function onUserLeave(){
-    onlineUsers = []
-    serverIO.emit('signal')
+function onUserEntered(socket, userName){
+    socket.broadcast.emit('newUserEntered', {
+        "message" : userName + ' has entered the chat.'
+    })
+    updateNumUsers()
 }
 
-function onUserDisconnect(){
-    console.log('A client has disconnected from server.')
-    onlineUsers = []
-    serverIO.emit('signal')
+function updateNumUsers(){
+    serverIO.sockets.emit('updateNumUsers', getMapSize(onlineUsers))
+}
+
+function onUserLeave(socket, status){
+    if(status == "disconnected"){
+        console.log('A client has disconnected from server.')
+    }else{
+        console.log('A user has left the chat')
+    }
+    var userName = onlineUsers[socket.id]["userName"]
+    var broadcastData = {
+        "userName" : userName,
+        "message" : userName + " has left the chat."
+    }
+    delete onlineUsers[socket.id]
+    socket.broadcast.emit('userLeft', broadcastData)
+    console.log(onlineUsers)
+    updateNumUsers()
 }
 
 function filterUser(arr, value) { 
     return arr.filter((u) => { 
         return u["userName"] != value["userName"]; 
     });
+}
+
+function getMapSize(map) {
+    var len = 0;
+    for (var m in map) {
+            len++;
+    }
+
+    return len;
 }
 

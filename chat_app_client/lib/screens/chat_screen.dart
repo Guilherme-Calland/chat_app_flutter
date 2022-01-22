@@ -1,8 +1,5 @@
 import 'package:chat_app_client/shared/chat_app_shared_data.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import '../misc/utils.dart';
 import '../model/message.dart';

@@ -69,9 +69,6 @@ class ChatAppSharedData extends ChangeNotifier{
     notifyListeners();
   }
 
-  void passServerIP(String address) {
-  }
-
   void onDoneSleep(){
     waitingInitialConnection = false;
     notifyListeners();

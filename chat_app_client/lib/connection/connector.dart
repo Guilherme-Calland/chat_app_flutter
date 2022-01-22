@@ -51,43 +51,35 @@ class Connector {
     });
 
     socket.on('signUp', (data) {
-      if (data["socketID"] == socket.id) {
-        snack.display(data["message"], darkestBlue);
-        if (data["validated"] == 'yes') {
-          sharedData.changeLoggedStatus(true);
-          nav.popAndPush(ChatScreen.ROUTE_ID);
-        }
-      }
-
+      snack.display(data["message"], darkestBlue);
       if (data["validated"] == 'yes') {
-        sharedData.updateNumOfUsers(data["numOfUsers"]);
+        sharedData.changeLoggedStatus(true);
+        nav.popAndPush(ChatScreen.ROUTE_ID);
       }
+    });
+
+    socket.on('newUserEntered', (data){
+      if(sharedData.loggedIn){
+        snack.display(data["message"], green);
+      };
     });
 
     socket.on('logIn', (data) {
-      if (data["socketID"] == socket.id) {
-        if (data["validated"] == 'yes') {
-          sharedData.changeCurrentUserTheme(data["theme"]);
-          sharedData.changeLoggedStatus(true);
-          nav.popAndPush(ChatScreen.ROUTE_ID);
-        } else {
-          snack.display(data["message"], blue);
-        }
-      }
-
       if (data["validated"] == 'yes') {
-        sharedData.updateNumOfUsers(data["numOfUsers"]);
+        sharedData.changeLoggedStatus(true);
+        nav.popAndPush(ChatScreen.ROUTE_ID);
+      } else {
+        snack.display(data["message"], darkestBlue);
       }
     });
 
-    socket.on('signal', (data){
+    socket.on('userLeft', (data){
       if(sharedData.loggedIn){
-        var json = sharedData.currentUser.userToJson();
-        socket.emit('signal', json);
+        snack.display('${data["userName"]} has left the chat.' , red);
       }
     });
 
-    socket.on('updatedListNum', (data) {
+    socket.on('updateNumUsers', (data){
       sharedData.updateNumOfUsers(data);
     });
   }
@@ -121,7 +113,7 @@ class Connector {
         sharedData.changeSocketStatus('disconnected');
         nav.popToHome();
       } else {
-        String sendTime = new DateTime.now().toString().substring(11, 16);
+        String sendTime = DateTime.now().toString().substring(11, 16);
         var messageJson = {
           "text": text,
           "sender": user.userName,
@@ -129,7 +121,6 @@ class Connector {
           "theme": user.theme
         };
         socket.emit("message", messageJson);
-        sharedData.addMessage(Message.fromJson(messageJson));
       }
     }
   }
