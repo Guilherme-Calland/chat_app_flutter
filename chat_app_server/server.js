@@ -15,7 +15,7 @@ var messages = []
 
 serverIO.on('connection', (socket) => {
     console.log('Server connected successfully with a new client.')
-    serverIO.emit('connected', sendServerData())
+    socket.emit('connected', sendServerData())
     socket.on('disconnect', () => { onUserDisconnect() } )
     socket.on('signal', (data) => { updateOnlineUsers(data) })
     socket.on('message', (msg) => { onMessage(msg, socket)} )
@@ -23,6 +23,10 @@ serverIO.on('connection', (socket) => {
     socket.on('logIn', (data) => { logIn(data, socket.id)} )
     socket.on('updateUser', (data) => { updateUser(data) } )
     socket.on('leave', () => { onUserLeave() })
+
+    socket.on('test', (inData) => {
+        socket.emit('test', "test")
+    })
 })
 
 function updateOnlineUsers(user){
