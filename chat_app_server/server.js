@@ -10,6 +10,7 @@ const server = app.listen(PORT, () => {
 const serverIO = require('socket.io')(server)
 
 const onlineUsers = new Map()
+const onlineSockets = new Map()
 const registeredUsers = new Map()
 const messages = []
 
@@ -44,7 +45,7 @@ function signUp(data, socket){
     var userName = data["userName"]
     var returnData;
 
-    if(registeredUsers[userName]){
+    if(registeredUsers.has(userName)){
         returnData =  
         {
             'message' : 'This user name is already taken.',
@@ -56,12 +57,19 @@ function signUp(data, socket){
             "message" : "Registration successful.",
             "validated" : "yes",
         }
-        registeredUsers[userName] = data
-        onlineUsers[socket.id] = data 
+        registeredUsers.set(userName, data)
+        onlineUsers.set(userName, data)
+        onlineSockets.set(socket.id, userName)
         onUserEntered(socket, userName)
     }
     socket.emit('signUp', returnData)
-    console.log(onlineUsers)
+}
+
+function printOutUserList(){
+    console.log("\n #####\n #####\n\nregistered users:")
+    console.log(registeredUsers)
+    console.log("\nonline users:")
+    console.log(onlineUsers, '\n\n #####\n #####')
 }
 
 function logIn(data, socket){
@@ -69,36 +77,38 @@ function logIn(data, socket){
     var password = data["password"]
     var returnData;
     var validUser = false
-
-    if(onlineUsers[socket.id]){
+    var isOnline = false
+    if(onlineUsers.has(userName)){
+        isOnline = true
         returnData = 
-            {
-                "validated" : "no",
-                "message" : userName + ' is already online.'
-            }
-    }else{
-        if(registeredUsers[userName]){
-            var user = registeredUsers[userName]
-            if(password == user["password"]){
-                validUser = true
-            }
+        {
+            "validated" : "no",
+            "message" : userName + ' is already online.'
         }
     }
-
-    if(validUser){
-        returnData = {
-            "validated" : "yes"
+    
+    if(!isOnline){
+        if(registeredUsers.has(userName)){
+            var user = registeredUsers.get(userName)
+            if(password == user["password"]){
+                returnData = {
+                    "validated" : "yes"
+                }
+                onlineUsers.set(userName, data)
+                onlineSockets.set(socket.id, userName)
+                onUserEntered(socket, userName)
+                validUser = true;
+            }
         }
-        onlineUsers[socket.id] = data 
-        onUserEntered(socket, userName)
-    } else {
-        returnData = {
-            "validated" : "no",
-            "message" : "User name or password are incorrect."
+
+        if(!validUser){
+            returnData = {
+                "validated" : "no",
+                "message" : "User name or password are incorrect."
+            }
         }
     }
     socket.emit('logIn', returnData)
-    console.log(onlineUsers)
 }
 
 function onUserEntered(socket, userName){
@@ -106,6 +116,7 @@ function onUserEntered(socket, userName){
         "message" : userName + ' has entered the chat.'
     })
     updateNumUsers()
+    printOutUserList()
 }
 
 function updateNumUsers(){
@@ -118,21 +129,13 @@ function onUserLeave(socket, status){
     }else{
         console.log('A user has left the chat')
     }
-    var userName = onlineUsers[socket.id]["userName"]
-    var broadcastData = {
-        "userName" : userName,
-        "message" : userName + " has left the chat."
-    }
-    delete onlineUsers[socket.id]
+    var userName = onlineSockets.get(socket.id)
+    var broadcastData = userName + ' has left the chat.'
+    onlineUsers.delete(userName)
+    onlineSockets.delete(socket.id)
     socket.broadcast.emit('userLeft', broadcastData)
-    console.log(onlineUsers)
     updateNumUsers()
-}
-
-function filterUser(arr, value) { 
-    return arr.filter((u) => { 
-        return u["userName"] != value["userName"]; 
-    });
+    printOutUserList()
 }
 
 function getMapSize(map) {
@@ -140,7 +143,6 @@ function getMapSize(map) {
     for (var m in map) {
             len++;
     }
-
     return len;
 }
 

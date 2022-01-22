@@ -75,7 +75,7 @@ class Connector {
 
     socket.on('userLeft', (data){
       if(sharedData.loggedIn){
-        snack.display('${data["userName"]} has left the chat.' , red);
+        snack.display(data, red);
       }
     });
 
@@ -98,7 +98,6 @@ class Connector {
     if (disconnectedFromServer()) {
       sharedData.changeSocketStatus('disconnected');
       nav.popToHome();
-      leave();
     } else {
       var jsonData = user.userToJson();
       socket.emit("logIn", jsonData);
