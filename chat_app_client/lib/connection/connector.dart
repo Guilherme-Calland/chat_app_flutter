@@ -67,6 +67,7 @@ class Connector {
     socket.on('logIn', (data) {
       if (data["validated"] == 'yes') {
         sharedData.changeLoggedStatus(true);
+        sharedData.changeCurrentUserTheme(data["theme"]);
         nav.popAndPush(ChatScreen.ROUTE_ID);
       } else {
         snack.display(data["message"], darkestBlue);

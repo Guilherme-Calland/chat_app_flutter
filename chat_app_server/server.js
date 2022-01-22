@@ -21,7 +21,15 @@ serverIO.on('connection', (socket) => {
     socket.on('message', (msg) => { onMessage(msg)} )
     socket.on('signUp', (data) => { signUp(data, socket)} )
     socket.on('logIn', (data) => { logIn(data, socket)} )
+    socket.on('updateUser', (data) => updateUser(data))
 })
+
+function updateUser(data){
+    registeredUsers.set(data["userName"], data)
+    onlineUsers.set(data["userName"], data)
+    console.log(registeredUsers.get(data["userName"]))
+    printOutUserList()
+}
 
 function serverData(){
     var data =
@@ -91,7 +99,8 @@ function logIn(data, socket){
             var user = registeredUsers.get(userName)
             if(password == user["password"]){
                 returnData = {
-                    "validated" : "yes"
+                    "validated" : "yes",
+                    "theme" : user["theme"]
                 }
                 onlineUsers.set(userName, data)
                 onlineSockets.set(socket.id, userName)
