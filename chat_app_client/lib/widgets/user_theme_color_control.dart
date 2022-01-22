@@ -14,55 +14,47 @@ class UserThemeColorControl extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<ChatAppSharedData>(
-      builder: (_, data, __){
+      builder: (_, data, __) {
         return Container(
           child: !data.colorOptionsEnabled
               ? Container(
-            margin: const EdgeInsets.only(right: 16),
-            child: BrushButton(
-              onTap: (){
-                data.toggleColorOptions();
-                callback();
-              },
-            ),
-          )
-              : Row(
-            children: [
-              Container(
-                margin: const EdgeInsets.only(right: 16),
-                child: BrushButton(
-                  onTap: (){
-                    data.toggleColorOptions();
-                    callback();
-                  },
-                ),
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ColorBox(theme: 'blue', callback: callback),
-                      ColorBox(theme: 'purple', callback: callback),
-                      ColorBox(theme: 'pink', callback: callback),
-                    ],
+                  margin: const EdgeInsets.only(right: 16),
+                  child: BrushButton(
+                    onTap: () {
+                      data.toggleColorOptions();
+                      callback();
+                    },
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ColorBox(theme: 'red', callback: callback),
-                      ColorBox(theme: 'orange', callback: callback),
-                      ColorBox(theme: 'green', callback: callback),
-                    ],
-                  )
-                ],
-              ),
-            ],
-          ),
+                )
+              : Row(
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ColorBox(theme: 'blue', callback: callback),
+                            ColorBox(theme: 'purple', callback: callback),
+                            ColorBox(theme: 'pink', callback: callback),
+                            SizedBox(width: 16,)
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ColorBox(theme: 'red', callback: callback),
+                            ColorBox(theme: 'orange', callback: callback),
+                            ColorBox(theme: 'green', callback: callback),
+                            SizedBox(width: 16,)
+                          ],
+                        )
+                      ],
+                    ),
+                  ],
+                ),
         );
       },
     );
-
   }
 }

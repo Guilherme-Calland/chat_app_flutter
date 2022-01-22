@@ -20,7 +20,7 @@ class ColorBox extends StatelessWidget {
             data.toggleColorOptions();
           },
           child: Container(
-            margin: const EdgeInsets.all(4),
+            margin: const EdgeInsets.all(2),
             decoration: BoxDecoration(
               color: themeToColor(theme),
               borderRadius: BorderRadius.circular(4),
@@ -30,8 +30,8 @@ class ColorBox extends StatelessWidget {
                     : white.withOpacity(0.5),
               ),
             ),
-            width: 15,
-            height: 15,
+            width: 18,
+            height: 18,
           ),
         );
       },
