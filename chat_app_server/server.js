@@ -1,5 +1,4 @@
 const express = require('express')
-const { listen } = require('socket.io')
 const app = express()
 const PORT = process.env.PORT || 3000
 
@@ -120,7 +119,7 @@ function onUserEntered(socket, userName){
 }
 
 function updateNumUsers(){
-    serverIO.sockets.emit('updateNumUsers', getMapSize(onlineUsers))
+    serverIO.sockets.emit('updateNumUsers', onlineUsers.size)
 }
 
 function onUserLeave(socket, status){
@@ -136,13 +135,5 @@ function onUserLeave(socket, status){
     socket.broadcast.emit('userLeft', broadcastData)
     updateNumUsers()
     printOutUserList()
-}
-
-function getMapSize(map) {
-    var len = 0;
-    for (var m in map) {
-            len++;
-    }
-    return len;
 }
 
