@@ -17,6 +17,7 @@ class ColorBox extends StatelessWidget {
           onTap: (){
             callback();
             data.changeCurrentUserTheme(theme);
+            data.toggleColorOptions();
           },
           child: Container(
             margin: const EdgeInsets.all(4),
